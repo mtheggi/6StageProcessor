@@ -2,7 +2,7 @@ LIBRARY IEEE;
 USE IEEE.std_logic_1164.all;
 
 ENTITY my_nadder IS
-    generic (n: integer := 3);
+    generic (n: integer := 16);
 	PORT (a,b : IN  std_logic_vector(n-1 downto 0);
           cin : in std_logic;
 		  s : out std_logic_vector(n-1 downto 0);
