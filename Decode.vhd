@@ -11,7 +11,7 @@ entity Decode is
     rs: out std_logic_vector(2 downto 0);
     rt: out std_logic_vector(2 downto 0);
     rd: out std_logic_vector(2 downto 0);
-    immediateVal: out std_logic_vector(15 downto 0);
+    immediateVal: out std_logic_vector(15 downto 0)
   ) ;
 
 end Decode;
