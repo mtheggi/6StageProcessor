@@ -33,13 +33,19 @@ component RegistersFile is
         CLK, RST, WriteEnable:  in std_logic
     );
 end component;
-signal opcode: std_logic_vector(2 downto 0) := inst(31 downto 29);
-signal func: std_logic_vector(2 downto 0) := inst(28 downto 26);
-signal rs_sig: std_logic_vector(2 downto 0) := inst(24 downto 22);
-signal rt_sig: std_logic_vector(2 downto 0) := inst(21 downto 19);
-signal rd_sig: std_logic_vector(2 downto 0) := inst(18 downto 16);
-signal imm_sig: std_logic_vector(15 downto 0) := inst(15 downto 0);
+signal opcode: std_logic_vector(2 downto 0);
+signal func: std_logic_vector(2 downto 0);
+signal rs_sig: std_logic_vector(2 downto 0);
+signal rt_sig: std_logic_vector(2 downto 0);
+signal rd_sig: std_logic_vector(2 downto 0);
+signal imm_sig: std_logic_vector(15 downto 0);
 begin
+    opcode <= inst(31 downto 29);
+    func <= inst(28 downto 26);
+    rs_sig <= inst(24 downto 22);
+    rt_sig <= inst(21 downto 19);
+    rd_sig <= inst(18 downto 16);
+    imm_sig <= inst(15 downto 0);
     identifierBit<=inst(25);
     rs<=rs_sig;
     rt<=rt_sig;

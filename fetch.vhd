@@ -3,6 +3,7 @@ use ieee.std_logic_1164.all;
 entity fetch is
 port( rst, clk, branch:in std_logic;
 	branch_update: in std_logic_vector ( 15 downto 0);
+	updated_PC: out std_logic_vector ( 15 downto 0);
       inst: out std_logic_vector(31 downto 0));
 end entity fetch;
 architecture archfetch of fetch is
@@ -46,4 +47,5 @@ add2 <= (1 => '1', others => '0');
 m1: mux2 port map( add1, add2, sequential_increment, instruction(25));
 m2: mux2 port map( sequential_update, branch_update, update, branch);
 inst <= instruction;
+updated_PC <= sequential_update;
 end archfetch;
