@@ -6,8 +6,8 @@ entity RegistersFile is
     generic (n: integer:= 16);
     port (
         WritePort: in std_logic_vector(n - 1 DOWNTO 0);
-	      ReadPort: out std_logic_vector(n - 1 DOWNTO 0);
-        WriteAddress, ReadAddress: in std_logic_vector(2 DOWNTO 0);
+	      ReadPort1,ReadPort2: out std_logic_vector(n - 1 DOWNTO 0);
+        WriteAddress, ReadAddress1,ReadAddress2: in std_logic_vector(2 DOWNTO 0);
         CLK, RST, WriteEnable:  in std_logic
     );
 end entity RegistersFile;
@@ -40,7 +40,8 @@ begin
 	 loop1: FOR i in 0 to 7 GENERATE
 		Registers: Reg GENERIC MAP(n) PORT MAP(CLK, RST, en(i), WritePort, out1(i));
 	 END GENERATE;
-    ReadMux: mux8 GENERIC MAP(n) PORT MAP(out1(0), out1(1), out1(2), out1(3), out1(4), out1(5), out1(6), out1(7), ReadPort, ReadAddress);
+    ReadMux: mux8 GENERIC MAP(n) PORT MAP(out1(0), out1(1), out1(2), out1(3), out1(4), out1(5), out1(6), out1(7), ReadPort1, ReadAddress1);
+    ReadMux: mux8 GENERIC MAP(n) PORT MAP(out1(0), out1(1), out1(2), out1(3), out1(4), out1(5), out1(6), out1(7), ReadPort2, ReadAddress2);
 	 
 	 loop2: FOR i in 0 to 7 GENERATE 
 		en(i) <= '1' when ((to_integer(unsigned(WriteAddress)) = i) and WriteEnable='1') else '0';
