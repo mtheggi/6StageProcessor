@@ -4,9 +4,10 @@ use IEEE.numeric_std.all;
 
 entity Decode is
   port (
-    clk, WriteEnable: in std_logic;
+    clk, rst, WriteEnable: in std_logic;
     inst: in std_logic_vector(31 downto 0);
-    MemWrite, MemRead, RegWrite, FlagSelector, Branch, InEnb, OutEnb, AddressSelector, UncondBranch, identifierBit: out std_logic;
+    ControllerSignal: out std_logic_vector(8 downto 0);
+    identifierBit: out std_logic;
     AluSelector, rs, rt, rd: out std_logic_vector(2 downto 0);
     WriteAddress: in std_logic_vector(2 downto 0);
     WriteData: in std_logic_vector(15 downto 0);
@@ -19,16 +20,8 @@ architecture archOfDecode of Decode is
 component ControlUnit is
   port (
   opCode,Func: in std_logic_vector(2 downto 0);
-  MemWrite: out std_logic;
-  MemRead: out std_logic;
-  RegWrite: out std_logic;
-  FlagSelector: out std_logic;
-  Branch: out std_logic;
-  InEnb: out std_logic;
-  OutEnb: out std_logic;
-  AddressSelector: out std_logic;
   AluSelector: out std_logic_vector(2 downto 0);
-  UncondBranch: out std_logic
+  ControllerSignal: out std_logic_vector(8 downto 0)
   ) ;
 end component;
 component RegistersFile is
@@ -53,9 +46,9 @@ begin
     rd<=rd_sig;
     immediateVal<=imm_sig;
 
-    CU: ControlUnit port map(opcode, func, MemWrite, MemRead, RegWrite, FlagSelector, Branch, InEnb, OutEnb, AddressSelector, AluSelector, UncondBranch);
+    CU: ControlUnit port map(opcode, func, AluSelector, ControllerSignal);
 
-    RF: RegistersFile port map(WriteData, ReadPort1, ReadPort2, WriteAddress, rs_sig, rt_sig, clk,'0', WriteEnable);
+    RF: RegistersFile port map(WriteData, ReadPort1, ReadPort2, WriteAddress, rs_sig, rt_sig, clk, rst, WriteEnable);
 end archOfDecode ; -- archOfDecode
 
 

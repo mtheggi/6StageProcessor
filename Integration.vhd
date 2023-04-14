@@ -17,9 +17,10 @@ port( rst, clk, branch:in std_logic;
 end component;
 component Decode is
   port (
-    clk, WriteEnable: in std_logic;
+    clk, rst, WriteEnable: in std_logic;
     inst: in std_logic_vector(31 downto 0);
-    MemWrite, MemRead, RegWrite, FlagSelector, Branch, InEnb, OutEnb, AddressSelector, UncondBranch, identifierBit: out std_logic;
+    ControllerSignal: out std_logic_vector(8 downto 0);
+    identifierBit: out std_logic;
     AluSelector, rs, rt, rd: out std_logic_vector(2 downto 0);
     WriteAddress: in std_logic_vector(2 downto 0);
     WriteData: in std_logic_vector(15 downto 0);
@@ -30,8 +31,9 @@ signal AluSelector, rs, rt, rd: std_logic_vector(2 downto 0);
 signal rs_data, rt_data: std_logic_vector(15 downto 0);
 signal instruction: std_logic_vector(31 downto 0);
 signal immediateVal: std_logic_vector(15 downto 0);
-signal MemWrite, MemRead, RegWrite, FlagSelector, Branch, InEnb, OutEnb, AddressSelector, UncondBranch, identifierBit:  std_logic;
+signal identifierBit:  std_logic;
+signal ControllerSignal: std_logic_vector (8 downto 0);
 begin
-f: fetch port map (rst, clk, Branch, rs_data, instruction);
-d: Decode port map (clk, '0', instruction, MemWrite, MemRead, RegWrite, FlagSelector, Branch, InEnb, OutEnb, AddressSelector, UncondBranch, identifierBit, AluSelector, rs, rt, rd, "000", (others => '0'), immediateVal, rs_data, rt_data);--Write en, address, data from WB
+f: fetch port map (rst, clk, ControllerSignal(4), rs_data, instruction);
+d: Decode port map (clk, rst, '0', instruction, ControllerSignal, identifierBit, AluSelector, rs, rt, rd, "000", (others => '0'), immediateVal, rs_data, rt_data);--Write en, address, data from WB
 end archinteg;

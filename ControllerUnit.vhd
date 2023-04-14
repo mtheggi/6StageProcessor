@@ -6,9 +6,8 @@ use IEEE.numeric_std.all;
 entity ControlUnit is
   port (
   opCode,Func: in std_logic_vector(2 downto 0);
-  
   AluSelector: out std_logic_vector(2 downto 0);
-  ContrullerSignel: out std_logic_vector(8 downto 0);
+  ControllerSignal: out std_logic_vector(8 downto 0)
   ) ;
 end ControlUnit;
 
@@ -36,6 +35,6 @@ Else "000000000";
 -- OutEnb<=temp(2);
 -- AddressSelector<=temp(1);
 -- UncondBranch<=temp(0);
-ContrullerSignel<=temp;
+ControllerSignal<=temp;
 AluSelector<=Func;
 end archOfConTrolUnit ; -- archOfConTrolUnit

@@ -50,8 +50,8 @@ begin
    reg6 :Reg GENERIC MAP(n) PORT MAP(CLK, RST, en(5), WritePort, out6);
    reg7 :Reg GENERIC MAP(n) PORT MAP(CLK, RST, en(6), WritePort, out7);
    reg8 :Reg GENERIC MAP(n) PORT MAP(CLK, RST, en(7), WritePort, out8);
-    ReadMux: mux8 GENERIC MAP(n) PORT MAP(out1, out2, out3, out4, out5, out6, out7, out8, ReadPort1, ReadAddress1);
-    ReadMux: mux8 GENERIC MAP(n) PORT MAP(out1, out2, out3, out4, out5, out6, out7, out8, ReadPort2, ReadAddress2);
+    ReadMux1: mux8 GENERIC MAP(n) PORT MAP(out1, out2, out3, out4, out5, out6, out7, out8, ReadPort1, ReadAddress1);
+    ReadMux2: mux8 GENERIC MAP(n) PORT MAP(out1, out2, out3, out4, out5, out6, out7, out8, ReadPort2, ReadAddress2);
 	 
 	 loop2: FOR i in 0 to 7 GENERATE 
 		en(i) <= '1' when ((to_integer(unsigned(WriteAddress)) = i) and WriteEnable='1') else '0';
