@@ -32,16 +32,26 @@ architecture ArchOfRegistersFile of RegistersFile is
     end component;
 
     signal en: std_logic_vector(7 downto 0);
-	 Type InputType is Array(0 to 7) of std_logic_vector(n - 1 downto 0);
-    signal out1: InputType;
+    signal out1:std_logic_vector(n - 1 downto 0);
+    signal out2:std_logic_vector(n - 1 downto 0);
+    signal out3:std_logic_vector(n - 1 downto 0);
+    signal out4:std_logic_vector(n - 1 downto 0);
+    signal out5:std_logic_vector(n - 1 downto 0);
+    signal out6:std_logic_vector(n - 1 downto 0);
+    signal out7:std_logic_vector(n - 1 downto 0);
+    signal out8:std_logic_vector(n - 1 downto 0);
 begin
     
-	
-	 loop1: FOR i in 0 to 7 GENERATE
-		Registers: Reg GENERIC MAP(n) PORT MAP(CLK, RST, en(i), WritePort, out1(i));
-	 END GENERATE;
-    ReadMux: mux8 GENERIC MAP(n) PORT MAP(out1(0), out1(1), out1(2), out1(3), out1(4), out1(5), out1(6), out1(7), ReadPort1, ReadAddress1);
-    ReadMux: mux8 GENERIC MAP(n) PORT MAP(out1(0), out1(1), out1(2), out1(3), out1(4), out1(5), out1(6), out1(7), ReadPort2, ReadAddress2);
+   reg1 :Reg GENERIC MAP(n) PORT MAP(CLK, RST, en(0), WritePort, out1);
+   reg2 :Reg GENERIC MAP(n) PORT MAP(CLK, RST, en(1), WritePort, out2);
+   reg3 :Reg GENERIC MAP(n) PORT MAP(CLK, RST, en(2), WritePort, out3);
+   reg4 :Reg GENERIC MAP(n) PORT MAP(CLK, RST, en(3), WritePort, out4);
+   reg5 :Reg GENERIC MAP(n) PORT MAP(CLK, RST, en(4), WritePort, out5);
+   reg6 :Reg GENERIC MAP(n) PORT MAP(CLK, RST, en(5), WritePort, out6);
+   reg7 :Reg GENERIC MAP(n) PORT MAP(CLK, RST, en(6), WritePort, out7);
+   reg8 :Reg GENERIC MAP(n) PORT MAP(CLK, RST, en(7), WritePort, out8);
+    ReadMux: mux8 GENERIC MAP(n) PORT MAP(out1, out2, out3, out4, out5, out6, out7, out8, ReadPort1, ReadAddress1);
+    ReadMux: mux8 GENERIC MAP(n) PORT MAP(out1, out2, out3, out4, out5, out6, out7, out8, ReadPort2, ReadAddress2);
 	 
 	 loop2: FOR i in 0 to 7 GENERATE 
 		en(i) <= '1' when ((to_integer(unsigned(WriteAddress)) = i) and WriteEnable='1') else '0';
