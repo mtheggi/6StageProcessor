@@ -29,7 +29,7 @@ Else "00"&Func(1)&"00"&Func(1)&Func(0)&'0'&'0' When opCode="010"
 Else "011000000" When opCode = "011"
 Else "100000000" When opCode = "100"
 Else "000"&Func(0)&"1000"&Func(2) When opCode = "101"
-Else Not Func(0)& Func(0)& Func(0)&"000000" When opCode = "110"
+Else Not Func(0)& Func(0)& Func(0)&"000010" When opCode = "110"
 Else Not Func(0)& Func(0)&"0010011" When opCode = "111"
 Else "000000000";
 
