@@ -17,14 +17,15 @@ architecture DM of DataMemory is
 begin 
 	process(Reset , WriteEnable , ReadEnable)
 	begin 
-    		if Reset = '1' then 
-	        memory <= (others => (others=> '0')); 
-    		end if; 
- 		if WriteEnable = '1' then 
-	        memory(to_integer(unsigned(address))) <= dataIn;
-    		end if;
- 		if ReadEnable  = '1' then 
+    	if Reset = '1' then 
+	        memory <= (others => (others=> '0'));     		
+ 		ELSIF WriteEnable = '1' and ReadEnable = '1' then 
+	        memory(to_integer(unsigned(address))) <= dataIn; 
+            dataOut <= memory(to_integer(unsigned(address)));    		
+ 		ELSIF ReadEnable  = '1' then 
 		        dataOut <= memory(to_integer(unsigned(address))); 
-    		end if ;
+        ELSIF WriteEnable = '1' then
+            memory(to_integer(unsigned(address))) <= dataIn;
+        end if ; 
 	end process;  
 end architecture DM;
