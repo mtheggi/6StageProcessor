@@ -14,6 +14,7 @@ entity ControlUnit is
   InEnb: out std_logic;
   OutEnb: out std_logic;
   AddressSelector: out std_logic;
+  AluSelector: out std_logic_vector(2 downto 0);
   UncondBranch: out std_logic
   ) ;
 end ControlUnit;
@@ -42,4 +43,5 @@ InEnb<=temp(3);
 OutEnb<=temp(2);
 AddressSelector<=temp(1);
 UncondBranch<=temp(0);
+AluSelector<=Func;
 end archOfConTrolUnit ; -- archOfConTrolUnit
