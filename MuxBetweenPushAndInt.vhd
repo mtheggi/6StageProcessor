@@ -9,7 +9,7 @@ entity IntMux is
   Rs,PC:in std_logic_vector(15 downto 0);
   OutofMux: out std_logic_vector(15 downto 0)
   ) ;
-end ent;
+end IntMux;
 
 architecture archOfIntMux of IntMux is
   component mux2 is
