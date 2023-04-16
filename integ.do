@@ -35,6 +35,7 @@ add wave -position end  sim:/integration/immediateVal
 add wave -position end  sim:/integration/updated_PC
 add wave -position end  sim:/integration/identifierBit
 add wave -position end  sim:/integration/ControllerSignal
+add wave -position 16  sim:/integration/ControllerSignalAfterMux
 add wave -position end  sim:/integration/d/opcode
 add wave -position end  sim:/integration/d/func
 add wave -position end  sim:/integration/d/rs_sig
@@ -42,6 +43,7 @@ add wave -position end  sim:/integration/d/rt_sig
 add wave -position end  sim:/integration/d/rd_sig
 add wave -position end  sim:/integration/d/imm_sig
 add wave -position 16  sim:/integration/FD/q
+add wave -position 16  sim:/integration/ResofMux
 force -freeze sim:/integration/clk 0 0, 1 {50 ps} -r 100
 force -freeze sim:/integration/rst 1 0
 force -freeze sim:/integration/int 0 0

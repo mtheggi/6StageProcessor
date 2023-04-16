@@ -4,8 +4,8 @@ use IEEE.numeric_std.all;
 
 entity IntWithControllerMux is
   port (
-    ControllerSignalPure:in std_logic_vector(8 downto 0);
-    OutofMux : out std_logic_vector(8 downto 0);
+    ControllerSignalPure:in std_logic_vector(9 downto 0);
+    OutofMux : out std_logic_vector(9 downto 0);
     sel : in std_logic
   ) ;
 end IntWithControllerMux;
@@ -19,10 +19,10 @@ architecture archOfIntWithControllerMux of IntWithControllerMux is
       sel : in std_logic
     );
     end component;
-    signal  temp: std_logic_vector(8 downto 0);
+    signal  temp: std_logic_vector(9 downto 0);
 begin
-      temp<="100010011";
+      temp<="0100010011";
  
-  mux1: mux2 GENERIC map(9) port map(ControllerSignalPure,temp,OutofMux,sel);
+  mux1: mux2 GENERIC map(10) port map(ControllerSignalPure,temp,OutofMux,sel);
 
-end IntWithControllerMux ; -- arch
+end archOfIntWithControllerMux ; -- arch

@@ -38,8 +38,8 @@ component IntMux is
     end component;
     component IntWithControllerMux is
         port (
-          ControllerSignalPure:in std_logic_vector(8 downto 0);
-          OutofMux : out std_logic_vector(8 downto 0);
+          ControllerSignalPure:in std_logic_vector(9 downto 0);
+          OutofMux : out std_logic_vector(9 downto 0);
           sel : in std_logic
         ) ;
         end component;
@@ -58,7 +58,7 @@ signal FD_out, FD_in: std_logic_vector(47 downto 0);
 signal instruction: std_logic_vector(31 downto 0);
 signal immediateVal, updated_PC,ResofMux: std_logic_vector(15 downto 0);
 signal identifierBit:  std_logic;
-signal ControllerSignal: std_logic_vector (9 downto 0);
+signal ControllerSignal, ControllerSignalAfterMux: std_logic_vector (9 downto 0);
 signal OpcodePlusFunc: std_logic_vector (5 downto 0);
 begin
 FD_in <= updated_PC & instruction;
@@ -67,5 +67,5 @@ f: fetch port map (rst, clk, ControllerSignal(4), rs_data,  updated_PC, instruct
 FD: Reg generic map(48) port map (FD_in, clk, rst, '1', FD_out);
 d: Decode port map (clk, rst, '0', FD_out(31 downto 0), ControllerSignal, identifierBit, AluSelector, rs, rt, rd, "000", (others => '0'), immediateVal, rs_data, rt_data);--Write en, address, data from WB
 MuxBetWeenIntAndPush: IntMux port map (int,OpcodePlusFunc,rs_data,FD_out(47 downto 32),ResofMux);
-MuxBetweenIntAndControllerSignal: IntWithControllerMux generic map(9) port map(ControllerSignal,ControllerSignal,int);
+MuxBetweenIntAndControllerSignal: IntWithControllerMux generic map(9) port map(ControllerSignal,ControllerSignalAfterMux,int);
 end archinteg;

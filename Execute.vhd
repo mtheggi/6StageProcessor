@@ -14,6 +14,9 @@ entity Execute is
         OutputPort, RsOut, ALUResult: OUT std_logic_vector(15 downto 0);
         RdOut: OUT std_logic_vector(2 downto 0);
         ControllerSignalOut: OUT std_logic_vector(4 downto 0);
+        CCROut, ALUFunctionOut: out std_logic_vector(2 downto 0); -- For RTI
+        CCRFromRTI: IN std_logic_vector(2 downto 0);
+        RTIBit: IN std_logic;
         BranchFlag: out std_logic
     );
 end entity Execute;
@@ -37,12 +40,16 @@ architecture Exec of Execute is
     end component;
 
     signal ALUB: std_logic_vector(15 downto 0);
-    signal ALUFlags: std_logic_vector(2 downto 0);
+    signal ALUFlags, OutputBeforeMux: std_logic_vector(2 downto 0);
+    signal STCorCLC: std_logic;
+    signal MuxSelector: std_logic_vector(1 downto 0);
     
 begin
     RdOut <= Rd;
     ControllerSignalOut <= ControlSignals(8 downto 6) & ControlSignals(3) & ControlSignals(1);
     RSOut <= Rs;
+    ALUFunctionOut <= ALUFunction;
+    CCROut <= ALUFlags;
 
     -- MemWrite<=ControllerSignal(4);
     -- MemRead<=ControllerSignal(3);
@@ -54,10 +61,17 @@ begin
         ALUB <= Rt when '0',
                 Immediate when others;
 
-    ALUComp: ALU port map(Rs, ALUB, ALUFlags, ALUFunction, ControlSignals(9), ALUResult, ALUFlags);
+    ALUComp: ALU port map(Rs, ALUB, ALUFlags, ALUFunction, ControlSignals(9), ALUResult, OutputBeforeMux);
     CCRComp: CCR port map(ALUFlags, ControlSignals(5), BranchFlag);
 
     OutputPort <= Rs when ControlSignals(2) = '1';
+
+    STCorCLC <= (not (ControlSignals(8) or ControlSignals(7) or ControlSignals(6) or ControlSignals(4))) and (ALUFunction(1) or ALUFunction(0));
+    MuxSelector <= RTIBit & STCorCLC;
     
+    with MuxSelector select
+        ALUFlags <= OutputBeforeMux when "00",
+                    (ALUFunction(0) & ALUFlags(1 downto 0)) when "01",
+                    CCRFromRTI when others;
     
 end architecture Exec;
