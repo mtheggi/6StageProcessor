@@ -4,10 +4,10 @@ use IEEE.numeric_std.all;
 
 Entity DataMemory is 
     port(
-        WriteEnable , ReadEnable , Reset: in std_logic; 
+        WriteEnable , ReadEnable , Reset, INTR: in std_logic; 
         address : in std_logic_vector(9 downto 0  ) ; 
-        dataIn : in std_logic_vector(15 downto 0); 
-        dataOut : out std_logic_vector(15 downto 0 )
+        dataIn : in std_logic_vector(31 downto 0); 
+        dataOut : out std_logic_vector(31 downto 0 )
     );
 
 end Entity DataMemory;
@@ -15,25 +15,31 @@ architecture DM of DataMemory is
     type Dmemory is array (0 to 1023) of std_logic_vector(15 downto 0);
     signal memory : Dmemory := (others => (others => '0'));
     signal latched_address : std_logic_vector(9 downto 0);
-    signal latched_data : std_logic_vector(15 downto 0); 
+    signal latched_data : std_logic_vector(31 downto 0); 
 begin 
-	process(Reset , WriteEnable , ReadEnable)
-	begin 
+	process(Reset , WriteEnable , ReadEnable , INTR)
+      variable tempAddress : integer := 0; 
+    begin 
     	if Reset = '1' then 
 	        memory <= (others => (others=> '0'));     		
- 		ELSIF WriteEnable = '1' and ReadEnable = '1' then 
-	        memory(to_integer(unsigned(address))) <= dataIn; 
-            dataOut <= memory(to_integer(unsigned(address)));
-            latched_address <= address;
-            latched_data <= memory(to_integer(unsigned(address)));    		
  		ELSIF ReadEnable  = '1' then 
-		        dataOut <= memory(to_integer(unsigned(address))); 
-                latched_address <= address;
-                latched_data <= memory(to_integer(unsigned(address)));    		            
+                dataOut(15 downto 0 ) <= memory(to_integer(unsigned(address))); 
+                tempAddress := to_integer(unsigned(address)) + 1; 
+                dataOut(31 downto 16) <= memory(tempAddress);
+
+                latched_address <= address;        
+        
         ELSIF WriteEnable = '1' then
-            memory(to_integer(unsigned(address))) <= dataIn;
+            if INTR  = '1' then  
+                memory(to_integer(unsigned(address))) <= dataIn(15 downto 0); 
+                memory(to_integer(unsigned(address)) + 1) <= dataIn(31 downto 16); 		
+            else 
+                memory(to_integer(unsigned(address))) <= dataIn(15 downto 0); 
+            end if ;
+        
             latched_address <= address;
-            latched_data <=memory(to_integer(unsigned(address)));    		
+            latched_data <= dataIn;    
+        
         end if ; 
     end process; 
 end architecture DM;
