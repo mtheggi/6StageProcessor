@@ -47,17 +47,17 @@ component Reg is
 end component;
 signal AluSelector, rs, rt, rd: std_logic_vector(2 downto 0);
 signal rs_data, rt_data: std_logic_vector(15 downto 0);
-signal FD_out, FD_in: std_logic_vector(47 downto 0);
+signal FD_out, FD_in: std_logic_vector(48 downto 0);
 signal instruction: std_logic_vector(31 downto 0);
 signal immediateVal, updated_PC,ResofMux: std_logic_vector(15 downto 0);
 signal identifierBit:  std_logic;
 signal ControllerSignal: std_logic_vector (9 downto 0);
 signal OpcodePlusFunc: std_logic_vector (5 downto 0);
 begin
-FD_in <= updated_PC & instruction;
+FD_in <= int&updated_PC & instruction;
 OpcodePlusFunc<=instruction(31 downto 29)&AluSelector;
 f: fetch port map (rst, clk, ControllerSignal(4), rs_data,  updated_PC, instruction);
 FD: Reg generic map(48) port map (FD_in, clk, rst, '1', FD_out);
 d: Decode port map (clk, rst, '0', FD_out(31 downto 0), ControllerSignal, identifierBit, AluSelector, rs, rt, rd, "000", (others => '0'), immediateVal, rs_data, rt_data);--Write en, address, data from WB
-MuxBetWeenIntAndPush: IntMux port map (int,OpcodePlusFunc,rs_data,FD_out(47 downto 32),ResofMux);
+MuxBetWeenIntAndPush: IntMux port map (FD_out(48),OpcodePlusFunc,rs_data,FD_out(47 downto 32),ResofMux);
 end archinteg;
