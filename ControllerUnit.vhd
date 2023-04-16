@@ -7,16 +7,16 @@ entity ControlUnit is
   port (
   opCode,Func: in std_logic_vector(2 downto 0);
   AluSelector: out std_logic_vector(2 downto 0);
-  ControllerSignal: out std_logic_vector(8 downto 0)
+  ControllerSignal: out std_logic_vector(9 downto 0)
   ) ;
 end ControlUnit;
 
 architecture archOfConTrolUnit of ControlUnit is
   
-  signal temp:std_logic_vector(8 downto 0); 
+  signal temp:std_logic_vector(9 downto 0); 
 
 begin
-  temp <= "000000000" When opCode = "000"
+  temp(8 downto 0) <= "000000000" When opCode = "000"
 Else "001000000" When opCode = "001"
 Else "00"&Func(1)&"00"&Func(1)&Func(0)&'0'&'0' When opCode="010"
 Else "011000000" When opCode = "011"
@@ -26,6 +26,10 @@ Else Not Func(0)& Func(0)& Func(0)&"000010" When opCode = "110"
 Else Not Func(0)& Func(0)&"0010011" When opCode = "111"
 Else "000000000";
 
+temp(9) <= '1' when opCode="001"
+               else '0';
+
+-- ALUOPeration<=temp(9);
 -- MemWrite<=temp(8);
 -- MemRead<=temp(7);
 -- RegWrite<=temp(6);
