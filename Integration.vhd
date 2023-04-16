@@ -57,7 +57,7 @@ begin
 FD_in <= int&updated_PC & instruction;
 OpcodePlusFunc<=instruction(31 downto 29)&AluSelector;
 f: fetch port map (rst, clk, ControllerSignal(4), rs_data,  updated_PC, instruction);
-FD: Reg generic map(48) port map (FD_in, clk, rst, '1', FD_out);
+FD: Reg generic map(49) port map (FD_in, clk, rst, '1', FD_out);
 d: Decode port map (clk, rst, '0', FD_out(31 downto 0), ControllerSignal, identifierBit, AluSelector, rs, rt, rd, "000", (others => '0'), immediateVal, rs_data, rt_data);--Write en, address, data from WB
 MuxBetWeenIntAndPush: IntMux port map (FD_out(48),OpcodePlusFunc,rs_data,FD_out(47 downto 32),ResofMux);
 end archinteg;
