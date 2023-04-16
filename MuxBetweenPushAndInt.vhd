@@ -9,7 +9,7 @@ entity IntMux is
   Rs,PC:in std_logic_vector(15 downto 0);
   OutofMux: out std_logic_vector(15 downto 0)
   ) ;
-end ent;
+end IntMux;
 
 architecture archOfIntMux of IntMux is
   component mux2 is
@@ -20,13 +20,13 @@ architecture archOfIntMux of IntMux is
       sel : in std_logic
     );
     end component;
-    signal  Ispush; 
+    signal Ispush, intOrPush: std_logic; 
 begin
   with OpcodePlusFunc select
   Ispush <= '1' when "110000",
             '0' when others;
   intOrPush<= Ispush or   intOp;       
  
-  mux1: mux2 GENERIC map(16) port map(PC,Rs,OutofMux,intOrPush);
+  mux1: mux2 GENERIC map(16) port map(Rs,PC,OutofMux,intOrPush);
 
 end archOfIntMux ; -- arch
