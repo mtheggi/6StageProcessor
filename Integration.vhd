@@ -20,7 +20,7 @@ component Decode is
   port (
     clk, rst, WriteEnable: in std_logic;
     inst: in std_logic_vector(31 downto 0);
-    ControllerSignal: out std_logic_vector(8 downto 0);
+    ControllerSignal: out std_logic_vector(9 downto 0);
     identifierBit: out std_logic;
     AluSelector, rs, rt, rd: out std_logic_vector(2 downto 0);
     WriteAddress: in std_logic_vector(2 downto 0);
@@ -43,7 +43,7 @@ signal FD_out, FD_in: std_logic_vector(47 downto 0);
 signal instruction: std_logic_vector(31 downto 0);
 signal immediateVal, updated_PC: std_logic_vector(15 downto 0);
 signal identifierBit:  std_logic;
-signal ControllerSignal: std_logic_vector (8 downto 0);
+signal ControllerSignal: std_logic_vector (9 downto 0);
 begin
 FD_in <= updated_PC & instruction;
 f: fetch port map (rst, clk, ControllerSignal(4), rs_data,  updated_PC, instruction);

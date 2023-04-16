@@ -32,7 +32,6 @@ architecture Exec of Execute is
         port (
             CCRData: IN std_logic_vector(2 downto 0);
             FlagSelcetor: in std_logic;
-            CCROut: out std_logic_vector(2 downto 0);
             FlagOutput: out std_logic
         );
     end component;
@@ -56,7 +55,7 @@ begin
                 Immediate when others;
 
     ALUComp: ALU port map(Rs, ALUB, ALUFlags, ALUFunction, ControlSignals(9), ALUResult, ALUFlags);
-    CCRComp: CCR port map(ALUFlags, ControlSignals(5), ALUFlags, BranchFlag);
+    CCRComp: CCR port map(ALUFlags, ControlSignals(5), BranchFlag);
 
     OutputPort <= Rs when ControlSignals(2) = '1';
     

@@ -24,6 +24,7 @@ end component;
 signal ALUNot,ALUMov,ALUAdding,ALUAnd,ALUOr: std_logic_vector(15 downto 0);
 signal inputToAdder, notB, ALUResult: std_logic_vector(15 downto 0);
 signal AdderCin, CarryOut, notMov, NFlag, ZFlag: std_logic;
+signal CarrySelectors1: std_logic_vector(1 downto 0);
 
 begin
 	F <= ALUResult;
@@ -37,7 +38,7 @@ begin
 		
 
 	with sel select
-		AdderCin <= '1' when "110",
+		AdderCin <= '1' when "111",
 					'0' when others;
 
 	
@@ -67,9 +68,11 @@ begin
 		CCROut(1 downto 0) <= ZFlag & NFlag when '1',
 						   CCRIN(1 downto 0) when others;
 		 
-	with notMov and sel(2) select
-		CCROut(2) <= CarryOut when '1',
-				  CCRIN(2) when others;
+	CarrySelectors1 <= (notMov and sel(2)) & sel(0);
+	with CarrySelectors1 select
+		CCROut(2) <= CarryOut when "10",
+					 not CarryOut when "11",					 
+				  	 CCRIN(2) when others;
 	
 
 end arch4;
