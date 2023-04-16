@@ -23,6 +23,6 @@ architecture archOfIntWithControllerMux of IntWithControllerMux is
 begin
       temp<="100010011";
  
-  mux1: mux2 GENERIC map(16) port map(ControllerSignalPure,temp,OutofMux,sel);
+  mux1: mux2 GENERIC map(9) port map(ControllerSignalPure,temp,OutofMux,sel);
 
 end IntWithControllerMux ; -- arch
