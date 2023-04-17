@@ -66,7 +66,7 @@ begin
 
     OutputPort <= Rs when ControlSignals(2) = '1';
 
-    STCorCLC <= (not (ControlSignals(8) or ControlSignals(7) or ControlSignals(6) or ControlSignals(4))) and (ALUFunction(1) or ALUFunction(0));
+    STCorCLC <= (not (ControlSignals(8) or ControlSignals(7) or ControlSignals(6) or ControlSignals(4)) or ControlSignals(2)) and (ALUFunction(1) or ALUFunction(0));
     MuxSelector <= RTIBit & STCorCLC;
     
     with MuxSelector select

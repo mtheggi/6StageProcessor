@@ -19,6 +19,7 @@ vsim work.integration
 # Loading work.mux8(arch3)
 # Loading work.mux4(arch2)
 mem load -i {D:/CCE/Junior Year/Spring 23/CMPN301 - Computer Architecture/Project/6StageProcessor - new/6StageProcessor/integration.mem} /integration/f/ic/ram
+# mem load -i {D:\collegelectures\Computer Architecture\6StageProcessor\integration.mem} /integration/f/ic/ram
 add wave -position end  sim:/integration/clk
 add wave -position end  sim:/integration/rst
 add wave -position end  sim:/integration/int
