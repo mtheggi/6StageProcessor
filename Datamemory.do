@@ -1,4 +1,3 @@
-
 add wave -position end  sim:/datamemory/WriteEnable
 add wave -position end  sim:/datamemory/ReadEnable
 add wave -position end  sim:/datamemory/Reset

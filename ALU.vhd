@@ -70,8 +70,8 @@ begin
 		 
 	CarrySelectors1 <= (notMov and sel(2)) & sel(0);
 	with CarrySelectors1 select
-		CCROut(2) <= CarryOut when "10",
-					 not CarryOut when "11",					 
+		CCROut(2) <= CarryOut when "10", -- add, Inc, Iadd
+					 not CarryOut when "11", -- dec, sub				 
 				  	 CCRIN(2) when others;
 	
 

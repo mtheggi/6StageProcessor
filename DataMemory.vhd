@@ -22,7 +22,7 @@ begin
     begin 
     	if Reset = '1' then 
 	        memory <= (others => (others=> '0'));     		
- 		ELSIF ReadEnable  = '1' then 
+ 	ELSIF ReadEnable  = '1' then 
                 dataOut(15 downto 0 ) <= memory(to_integer(unsigned(address))); 
                 tempAddress := to_integer(unsigned(address)) + 1; 
                 dataOut(31 downto 16) <= memory(tempAddress);

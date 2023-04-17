@@ -26,6 +26,7 @@ Else Not Func(0)& Func(0)& Func(0)&"000010" When opCode = "110"
 Else Not Func(0)& Func(0)&"0010011" When opCode = "111"
 Else "000000000";
 
+--AluOperation
 temp(9) <= '1' when opCode="001"
                else '0';
 
