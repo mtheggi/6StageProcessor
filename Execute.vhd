@@ -4,17 +4,14 @@ use IEEE.numeric_std.all;
 
 entity Execute is
     port (
+        Reset: IN std_logic;
         ControlSignals : IN std_logic_vector(9 downto 0);
         Rs, Rt, Immediate: IN std_logic_vector(15 downto 0);
-        RsAddress, RtAddress, Rd, ALUFunction: IN std_logic_vector(2 downto 0);
+        ALUFunction: IN std_logic_vector(2 downto 0);
         identifierBit: IN std_logic;
-        RdFromMemory, RdFromWB: IN std_logic_vector(2 downto 0);
-        MemReadFromM1, RegWriteFromWB, RegWriteFromM1: IN std_logic; -- To Be Completed
-        DataInWrite, DataInMemory: IN std_logic_vector(15 downto 0);
-        OutputPort, RsOut, ALUResult: OUT std_logic_vector(15 downto 0);
-        RdOut: OUT std_logic_vector(2 downto 0);
-        ControllerSignalOut: OUT std_logic_vector(4 downto 0);
-        CCROut, ALUFunctionOut: out std_logic_vector(2 downto 0); -- For RTI
+        OutputPort, ALUResult: OUT std_logic_vector(15 downto 0);
+        ControllerSignalOut: OUT std_logic_vector(5 downto 0);
+        CCROut: out std_logic_vector(2 downto 0); -- For RTI
         CCRFromRTI: IN std_logic_vector(2 downto 0);
         RTIBit: IN std_logic;
         BranchFlag: out std_logic
@@ -45,10 +42,7 @@ architecture Exec of Execute is
     signal MuxSelector: std_logic_vector(1 downto 0);
     
 begin
-    RdOut <= Rd;
-    ControllerSignalOut <= ControlSignals(8 downto 6) & ControlSignals(3) & ControlSignals(1);
-    RSOut <= Rs;
-    ALUFunctionOut <= ALUFunction;
+    ControllerSignalOut <= ControlSignals(8 downto 6) & ControlSignals(4) & ControlSignals(3) & ControlSignals(1);
     CCROut <= ALUFlags;
 
     -- MemWrite<=ControllerSignal(4);
@@ -62,12 +56,13 @@ begin
                 Immediate when others;
 
     ALUComp: ALU port map(Rs, ALUB, ALUFlags, ALUFunction, ControlSignals(9), ALUResult, OutputBeforeMux);
-    CCRComp: CCR port map(ALUFlags, ControlSignals(5), BranchFlag);
+    CCRComp: CCR port map(Reset, ALUFlags, ControlSignals(5), BranchFlag);
 
     OutputPort <= Rs when ControlSignals(2) = '1';
 
     STCorCLC <= (not (ControlSignals(8) or ControlSignals(7) or ControlSignals(6) or ControlSignals(4)) or ControlSignals(2)) and (ALUFunction(1) or ALUFunction(0));
-    MuxSelector <= RTIBit & STCorCLC;
+    MuxSelector <= RTIBit & STCorCLC when RTIBit = '1'
+                    else '0' & STCorCLC;
     
     with MuxSelector select
         ALUFlags <= OutputBeforeMux when "00",

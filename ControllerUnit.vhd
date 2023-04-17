@@ -41,7 +41,7 @@ Else "000000000";
 --AluOperation
 temp(9) <= '1' when opCode="001"
                else '0';
-temp2<="0100010011";
+temp2<="0100000011";
 -- ALUOPeration<=temp(9);
 -- MemWrite<=temp(8);
 -- MemRead<=temp(7);

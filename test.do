@@ -1,12 +1,11 @@
-
-vsim work.simpleintegration
-# vsim work.simpleintegration 
+vsim work.integration
+# vsim work.integration 
 # Start time: 13:12:52 on Apr 17,2023
 # Loading std.standard
 # Loading std.textio(body)
 # Loading ieee.std_logic_1164(body)
 # Loading ieee.numeric_std(body)
-# Loading work.simpleintegration(archinteg)
+# Loading work.integration(archinteg)
 # Loading work.fetch(archfetch)
 # Loading work.pc(programcounter)
 # Loading work.instruction_cache(sync_ram_a)
@@ -19,50 +18,43 @@ vsim work.simpleintegration
 # Loading work.registersfile(archofregistersfile)
 # Loading work.mux8(arch3)
 # Loading work.mux4(arch2)
-add wave -position end  sim:/simpleintegration/clk
-add wave -position end  sim:/simpleintegration/rst
-add wave -position end  sim:/simpleintegration/int
-add wave -position end  sim:/simpleintegration/AluSelector
-add wave -position end  sim:/simpleintegration/rs
-add wave -position end  sim:/simpleintegration/rt
-add wave -position end  sim:/simpleintegration/rd
-add wave -position end  sim:/simpleintegration/rs_data
-add wave -position end  sim:/simpleintegration/rt_data
-add wave -position end  sim:/simpleintegration/FD_out
-add wave -position end  sim:/simpleintegration/FD_in
-add wave -position end  sim:/simpleintegration/DE_out
-add wave -position end  sim:/simpleintegration/DE_in
-add wave -position end  sim:/simpleintegration/instruction
-add wave -position end  sim:/simpleintegration/immediateVal
-add wave -position end  sim:/simpleintegration/updated_PC
-add wave -position end  sim:/simpleintegration/OutputPort
-add wave -position end  sim:/simpleintegration/ALURes
-add wave -position end  sim:/simpleintegration/identifierBit
-add wave -position end  sim:/simpleintegration/BranchFlag
-add wave -position end  sim:/simpleintegration/ControllerSignal
-add wave -position end  sim:/simpleintegration/ControllerSignalex
-add wave -position end  sim:/simpleintegration/d/RF/out1
-add wave -position end  sim:/simpleintegration/d/RF/out2
-add wave -position end  sim:/simpleintegration/d/RF/out3
-add wave -position end  sim:/simpleintegration/d/RF/out4
-add wave -position end  sim:/simpleintegration/d/RF/out5
-add wave -position end  sim:/simpleintegration/d/RF/out6
-add wave -position end  sim:/simpleintegration/d/RF/out7
-add wave -position end  sim:/simpleintegration/d/RF/out8
-mem load -i {D:/CCE/Junior Year/Spring 23/CMPN301 - Computer Architecture/Project/6StageProcessor - new/6StageProcessor/testcases.mem} /simpleintegration/f/ic/ram
-force -freeze sim:/simpleintegration/clk 0 0, 1 {50 ps} -r 100
-force -freeze sim:/simpleintegration/rst 1 0
-force -freeze sim:/simpleintegration/int 0 0
+add wave -position end  sim:/integration/clk
+add wave -position end  sim:/integration/rst
+add wave -position end  sim:/integration/int
+add wave -position end  sim:/integration/AluSelector
+add wave -position end  sim:/integration/rs
+add wave -position end  sim:/integration/rt
+add wave -position end  sim:/integration/rd
+add wave -position end  sim:/integration/rs_data
+add wave -position end  sim:/integration/rt_data
+add wave -position end  sim:/integration/FD_out
+add wave -position end  sim:/integration/FD_in
+add wave -position end  sim:/integration/DE_out
+add wave -position end  sim:/integration/DE_in
+add wave -position end  sim:/integration/instruction
+add wave -position end  sim:/integration/immediateVal
+add wave -position end  sim:/integration/updated_PC
+add wave -position end  sim:/integration/OutputPort
+add wave -position end  sim:/integration/ALUResult
+add wave -position 18  sim:/integration/CCROut
+add wave -position end  sim:/integration/identifierBit
+add wave -position end  sim:/integration/BranchFlag
+add wave -position end  sim:/integration/ControllerSignal
+add wave -position end  sim:/integration/ControllerSignalsofM1
+mem load -i {D:\collegelectures\Computer Architecture\6StageProcessor\testcases.mem} /integration/f/ic/ram
+force -freeze sim:/integration/clk 0 0, 1 {50 ps} -r 100
+force -freeze sim:/integration/rst 1 0
+force -freeze sim:/integration/int 0 0
 run
 # ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
-#    Time: 0 ps  Iteration: 0  Instance: /simpleintegration/f/ic
+#    Time: 0 ps  Iteration: 0  Instance: /integration/f/ic
 # ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
-#    Time: 0 ps  Iteration: 0  Instance: /simpleintegration/f/ic
-force -freeze sim:/simpleintegration/rst 0 0
+#    Time: 0 ps  Iteration: 0  Instance: /integration/f/ic
+force -freeze sim:/integration/rst 0 0
 run
 run
 run
 run
 run
-force -freeze sim:/simpleintegration/int 1 0
-run
+# force -freeze sim:/integration/int 1 0
+run 2000 ps

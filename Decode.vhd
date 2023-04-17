@@ -4,7 +4,7 @@ use IEEE.numeric_std.all;
 
 entity Decode is
   port (
-    clk, rst, WriteEnable: in std_logic;
+    int,clk, rst, WriteEnable: in std_logic;
     inst: in std_logic_vector(31 downto 0);
     ControllerSignal: out std_logic_vector(9 downto 0);
     identifierBit: out std_logic;
@@ -22,6 +22,7 @@ component ControlUnit is
   port (
   opCode,Func: in std_logic_vector(2 downto 0);
   AluSelector: out std_logic_vector(2 downto 0);
+  int: in std_logic;
   ControllerSignal: out std_logic_vector(9 downto 0);
   RTI_RET : out std_logic
   ) ;
@@ -54,7 +55,7 @@ begin
     rd<=rd_sig;
     immediateVal<=imm_sig;
 
-    CU: ControlUnit port map(opcode, func, AluSelector, ControllerSignal , RET_RTI_sig);
+    CU: ControlUnit port map(opcode, func, AluSelector, int ,ControllerSignal , RET_RTI_sig);
 
     RF: RegistersFile port map(WriteData, ReadPort1, ReadPort2, WriteAddress, rs_sig, rt_sig, clk, rst, WriteEnable);
 end archOfDecode ; -- archOfDecode
