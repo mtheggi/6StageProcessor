@@ -7,13 +7,21 @@ entity ControlUnit is
   port (
   opCode,Func: in std_logic_vector(2 downto 0);
   AluSelector: out std_logic_vector(2 downto 0);
+  int : in std_logic;
   ControllerSignal: out std_logic_vector(9 downto 0)
   ) ;
 end ControlUnit;
 
 architecture archOfConTrolUnit of ControlUnit is
-  
-  signal temp:std_logic_vector(9 downto 0); 
+  component mux2 is
+    GENERIC (n: integer:= 16);
+    port(	
+      in1,in2: in std_logic_vector(n - 1 downto 0);
+      out1 : out std_logic_vector(n - 1 downto 0);
+      sel : in std_logic
+    );
+    end component
+  signal temp,temp2:std_logic_vector(9 downto 0); 
 
 begin
   temp(8 downto 0) <= "000000000" When opCode = "000"
@@ -29,7 +37,7 @@ Else "000000000";
 --AluOperation
 temp(9) <= '1' when opCode="001"
                else '0';
-
+temp2<="0100010011";
 -- ALUOPeration<=temp(9);
 -- MemWrite<=temp(8);
 -- MemRead<=temp(7);
@@ -40,6 +48,6 @@ temp(9) <= '1' when opCode="001"
 -- OutEnb<=temp(2);
 -- AddressSelector<=temp(1);
 -- UncondBranch<=temp(0);
-ControllerSignal<=temp;
+mux1: mux2 GENERIC map(10) port map(temp,temp2,ControllerSignal,int);
 AluSelector<=Func;
 end archOfConTrolUnit ; -- archOfConTrolUnit
