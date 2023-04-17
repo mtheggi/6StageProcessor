@@ -6,7 +6,8 @@ USE IEEE.numeric_std.all;
 ENTITY instruction_cache IS
 PORT (
  address : IN std_logic_vector(15 DOWNTO 0);
- dataout : OUT std_logic_vector(31 DOWNTO 0) );
+ dataout : OUT std_logic_vector(31 DOWNTO 0);
+ resetAddress, intAddress: OUT std_logic_vector(15 DOWNTO 0) );
 END ENTITY instruction_cache;
 
 ARCHITECTURE sync_ram_a OF instruction_cache IS 
@@ -14,4 +15,6 @@ ARCHITECTURE sync_ram_a OF instruction_cache IS
  SIGNAL ram : ram_type ;
 BEGIN
  dataout <= ram(to_integer(unsigned((address)))) & ram(to_integer(unsigned((address))+1));
+ resetAddress <= ram(0);
+ intAddress <= ram(1);
 END sync_ram_a;
