@@ -8,7 +8,8 @@ entity ControlUnit is
   opCode,Func: in std_logic_vector(2 downto 0);
   AluSelector: out std_logic_vector(2 downto 0);
   int : in std_logic;
-  ControllerSignal: out std_logic_vector(9 downto 0)
+  ControllerSignal: out std_logic_vector(9 downto 0);
+  RTI_RET : out std_logic
   ) ;
 end ControlUnit;
 
@@ -20,10 +21,13 @@ architecture archOfConTrolUnit of ControlUnit is
       out1 : out std_logic_vector(n - 1 downto 0);
       sel : in std_logic
     );
-    end component
+    end component;
   signal temp,temp2:std_logic_vector(9 downto 0); 
-
+  signal RTIDetectTemp:std_logic_vector(5 downto 0);
 begin
+  RTIDetectTemp <= (opCode&Func) ; 
+  RTI_RET <= '1' when RTIDetectTemp = "111101" or RTIDetectTemp = "111111" else '0';
+  
   temp(8 downto 0) <= "000000000" When opCode = "000"
 Else "001000000" When opCode = "001"
 Else "00"&Func(1)&"00"&Func(1)&Func(0)&'0'&'0' When opCode="010"
