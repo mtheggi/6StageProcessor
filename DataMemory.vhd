@@ -4,7 +4,7 @@ use IEEE.numeric_std.all;
 
 Entity DataMemory is 
     port(
-        WriteEnable , ReadEnable , Reset, INTR: in std_logic; 
+        WriteEnable , ReadEnable , Reset, INTR, clk: in std_logic; 
         address : in std_logic_vector(9 downto 0  ) ; 
         dataIn : in std_logic_vector(31 downto 0); 
         dataOut : out std_logic_vector(31 downto 0 )
@@ -19,11 +19,11 @@ architecture DM of DataMemory is
     signal latched_memRead: std_logic; 
     signal latched_memWrite: std_logic; 
 begin 
-	process(Reset , WriteEnable , ReadEnable , INTR)
+	process(Reset , WriteEnable , ReadEnable , INTR, clk)
       variable tempAddress : integer := 0; 
     begin 
         
-        if rising_edge(WriteEnable) or rising_edge(ReadEnable) then   
+        if rising_edge(WriteEnable) and rising_edge(ReadEnable) then   
                 latched_address <= address;
                 latched_data <= dataIn; 
                 latched_memWrite <= WriteEnable;

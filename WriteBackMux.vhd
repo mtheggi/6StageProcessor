@@ -6,7 +6,7 @@ use IEEE.numeric_std.all;
 entity WriteBackMux is
   port (
     res,memoryData,inportData: in std_logic_vector(15 downto 0);
-    memSelactor,inPortSelector:in std_logic;
+    memSelector,inPortSelector:in std_logic;
     MuxRes: out std_logic_vector(15 downto 0)
    
   ) ;
@@ -25,6 +25,6 @@ port(
 end component;
 signal sel2:std_logic_vector(1 downto 0);
 begin
-sel2<=inPortSelector &memSelactor;
+sel2<=inPortSelector &memSelector;
 mainMux: mux4 generic map(16) port map(res,memoryData,inportData,inportData,MuxRes,sel2);
 end archOFWriteBackMux ; -- OFWriteBackMux

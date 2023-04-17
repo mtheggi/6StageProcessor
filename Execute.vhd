@@ -47,6 +47,7 @@ begin
     -- MemWrite<=ControllerSignal(4);
     -- MemRead<=ControllerSignal(3);
     -- RegWrite<=ControllerSignal(2);
+    -- Branch
     -- InEnb<=ControllerSignal(1);
     -- AddressSelector<=ControllerSignal(0);
 

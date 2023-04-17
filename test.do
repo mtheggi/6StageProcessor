@@ -41,11 +41,44 @@ add wave -position end  sim:/integration/identifierBit
 add wave -position end  sim:/integration/BranchFlag
 add wave -position end  sim:/integration/ControllerSignal
 add wave -position end  sim:/integration/ControllerSignalsofM1
-mem load -i {D:\collegelectures\Computer Architecture\6StageProcessor\testcases.mem} /integration/f/ic/ram
+add wave -position end  sim:/integration/d/RF/out1
+add wave -position end  sim:/integration/d/RF/out2
+add wave -position end  sim:/integration/d/RF/out3
+add wave -position end  sim:/integration/d/RF/out4
+add wave -position end  sim:/integration/d/RF/out5
+add wave -position end  sim:/integration/d/RF/out6
+add wave -position end  sim:/integration/d/RF/out7
+add wave -position end  sim:/integration/d/RF/out8
+add wave -position end  sim:/integration/EM1/q
+add wave -position end  sim:/integration/DMaddress
+add wave -position 3  sim:/integration/inport
+mem load -i {D:\CCE\Junior Year\Spring 23\CMPN301 - Computer Architecture\Project\6StageProcessor - new\6StageProcessor\testcases.mem} /integration/f/ic/ram
 force -freeze sim:/integration/clk 0 0, 1 {50 ps} -r 100
 force -freeze sim:/integration/rst 1 0
 force -freeze sim:/integration/int 0 0
 run
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ps  Iteration: 0  Instance: /integration/f/ic
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ps  Iteration: 0  Instance: /integration/f/ic
+force -freeze sim:/integration/inport 'hFFFE 0
+run
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ps  Iteration: 0  Region: /integration/d/RF/loop2(7)
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ps  Iteration: 0  Region: /integration/d/RF/loop2(6)
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ps  Iteration: 0  Region: /integration/d/RF/loop2(5)
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ps  Iteration: 0  Region: /integration/d/RF/loop2(4)
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ps  Iteration: 0  Region: /integration/d/RF/loop2(3)
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ps  Iteration: 0  Region: /integration/d/RF/loop2(2)
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ps  Iteration: 0  Region: /integration/d/RF/loop2(1)
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ps  Iteration: 0  Region: /integration/d/RF/loop2(0)
 # ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
 #    Time: 0 ps  Iteration: 0  Instance: /integration/f/ic
 # ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
@@ -56,5 +89,47 @@ run
 run
 run
 run
-# force -freeze sim:/integration/int 1 0
-run 2000 ps
+run
+force -freeze sim:/integration/inport 'h0001 0
+run
+run
+run
+force -freeze sim:/integration/inport 0000000000001111 0
+run
+force -freeze sim:/integration/inport 'h00C8 0
+run
+force -freeze sim:/integration/inport 0000000011111111 0
+run
+force -freeze sim:/integration/inport 0000000000011111 0
+run
+force -freeze sim:/integration/inport 'h00FC 0
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
