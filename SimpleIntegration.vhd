@@ -68,31 +68,39 @@ component DataMemory is
 
 end component;
 signal AluSelector, rs, rt, rd, flags: std_logic_vector(2 downto 0);
-signal rs_data, rt_data, SPout: std_logic_vector(15 downto 0);
+signal rs_data, rt_data: std_logic_vector(15 downto 0);
 signal FD_out, FD_in: std_logic_vector(48 downto 0);
-signal DE_out, DE_in: std_logic_vector(70 downto 0);
-signal EM1_out, EM1_in: std_logic_vector(59 downto 0);
+signal DE_out, DE_in: std_logic_vector(87 downto 0);
+signal EM1_out, EM1_in: std_logic_vector(69 downto 0);
 signal EM2_out, EM2_in: std_logic_vector(21 downto 0);
-signal MW_out, MW_in: std_logic_vector(37 downto 0);
-signal instruction: std_logic_vector(31 downto 0);
+signal MW_out, MW_in: std_logic_vector(53 downto 0);
+signal instruction, DMin, DMout: std_logic_vector(31 downto 0);
 signal immediateVal, updated_PC, OutputPort, ALURes: std_logic_vector(15 downto 0);
 signal identifierBit, BranchFlag:  std_logic;
-signal ControllerSignal: std_logic_vector (9 downto 0);
+signal ControllerSignal, DMaddress, SPout: std_logic_vector (9 downto 0);
 signal ControllerSignalex : std_logic_vector (4 downto 0);
 begin
 FD_in <= int & updated_PC & instruction;
-DE_in <= AluSelector & controllerSignal(9 downto 0)& identifierBit & rs_data & rt_data & rs & rt & rd & immediateVal;
-EM1_in <= ControllerSignalex & flags & DE_out(24 downto 22) & ALURes & DE_out(18 downto 16) & SPout;
-EM2_in <= 
-MW_in <= 
+DE_in <= FD_out(48 downto 32) & AluSelector & controllerSignal(9 downto 0)& identifierBit & rs_data & rt_data & rs & rt & rd & immediateVal;
+EM1_in <= DE_out(87 downto 71) & ControllerSignalex & flags & DE_out(56 downto 41) & ALURes & DE_out(18 downto 16) & SPout;
+EM2_in <= EM1_out(57 downto 55) & EM1_out(34 downto 19) & EM1_out(18 downto 16);
+MW_in <= DMout & EM2_out(21 downto 0);
 f: fetch port map (rst, clk, ControllerSignal(4), int, rs_data,  updated_PC, instruction);
 FD: Reg generic map(49) port map (FD_in, clk, rst, '1', FD_out);
 d: Decode port map (clk, rst, '0', FD_out(31 downto 0), ControllerSignal, identifierBit, AluSelector, rs, rt, rd, "000", (others => '0'), immediateVal, rs_data, rt_data);--Write en, address, data from WB
-DE: Reg generic map(71) port map (DE_in, clk, rst, '1', DE_out);
+DE: Reg generic map(88) port map (DE_in, clk, rst, '1', DE_out);
 e: SimpleExecute port map( DE_out(67 downto 58), DE_out(56 downto 41), DE_out(40 downto 25), DE_out(15 downto 0), DE_out(70 downto 68), DE_out(57), clk, rst, Outputport, ALURes, ControllerSignalex, BranchFlag, flags);
 stp: SP port map (DE_out(65), clk, int, DE_out(59), DE_out(70 downto 68), SPout);
-EM1: Reg generic map(60) port map (EM1_in, clk, rst, '1', EM1_out);
+EM1: Reg generic map(70) port map (EM1_in, clk, rst, '1', EM1_out);
 EM2: Reg generic map(22) port map (EM2_in, clk, rst, '1', EM2_out);
-DM: DataMemory port map (
-MW: Reg generic map(38) port map (MW_in, clk, rst, '1', MW_out);
+DM: DataMemory port map (EM1_out(52), EM1_out(51), rst, EM1_out(69), DMaddress, DMin, DMout);
+MW: Reg generic map(54) port map (MW_in, clk, rst, '1', MW_out);
+
+with EM1_out(54) select
+	DMaddress <= EM1_out(28 downto 19) when '0',
+		     EM1_out(9 downto 0) when others;
+with EM1_out(69) select
+	DMin <= EM1_out(50 downto 35) & "0000000000000000" when '0',
+		     EM1_out(15 downto 0) & "0000000000000" & flags when others;
+
 end archinteg;

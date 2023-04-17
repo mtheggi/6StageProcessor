@@ -39,7 +39,7 @@ architecture arch1 of SimpleExecute is
     signal STCorCLC: std_logic;
     
 begin
-    --Branch signal missing
+    --Branch signal missing, memwrite, memread, regwrite, inenable, address selector
     ControllerSignalOut <= ControlSignals(8 downto 6) & ControlSignals(3) & ControlSignals(1);
 
     -- MemWrite<=ControllerSignal(4);
