@@ -26,7 +26,8 @@ component Decode is
     AluSelector, rs, rt, rd: out std_logic_vector(2 downto 0);
     WriteAddress: in std_logic_vector(2 downto 0);
     WriteData: in std_logic_vector(15 downto 0);
-    immediateVal, ReadPort1, ReadPort2: out std_logic_vector(15 downto 0)
+    immediateVal, ReadPort1, ReadPort2: out std_logic_vector(15 downto 0);
+    RET_RTI_sig: out std_logic
   ) ;
 end component;
 component IntMux is
@@ -68,19 +69,20 @@ signal immediateVal, updated_PC,ResofMux: std_logic_vector(15 downto 0);
 signal identifierBit:  std_logic;
 signal ControllerSignal, ControllerSignalAfterMux: std_logic_vector (9 downto 0);
 signal OpcodePlusFunc: std_logic_vector (5 downto 0);
-signal DE_in, DE_out: std_logic_vector(71 downto 0);
+signal RET_RTI_Dec: std_logic;
+signal DE_in, DE_out: std_logic_vector(72 downto 0);
 signal CCRFromRTI, CCROut: std_logic_vector(2 downto 0);
 signal RTIBit, BranchFlag: std_logic;
 signal ALUResult: std_logic_vector(15 downto 0);
 signal ControllerSignalsofM1: std_logic_vector(5 downto 0);
 begin
 FD_in <= int & updated_PC & instruction;
-DE_in <= FD_Out(48) & ControllerSignal & rs_data & rt_data & immediateVal & rs & rt & rd & AluSelector & identifierBit;
+DE_in <= RET_RTI_Dec & FD_Out(48) & ControllerSignal & rs_data & rt_data & immediateVal & rs & rt & rd & AluSelector & identifierBit;
 OpcodePlusFunc<=instruction(31 downto 29)&AluSelector;
 f: fetch port map (rst, clk, ControllerSignal(4), int, rs_data,  updated_PC, instruction);
 FD: Reg generic map(49) port map (FD_in, clk, rst, '1', FD_out);
-d: Decode port map (FD_Out(48), clk, rst, '0', FD_out(31 downto 0), ControllerSignal, identifierBit, AluSelector, rs, rt, rd, "000", (others => '0'), immediateVal, rs_data, rt_data);--Write en, address, data from WB
+d: Decode port map (FD_Out(48), clk, rst, '0', FD_out(31 downto 0), ControllerSignal, identifierBit, AluSelector, rs, rt, rd, "000", (others => '0'), immediateVal, rs_data, rt_data,RET_RTI_Dec);--Write en, address, data from WB
 MuxBetWeenIntAndPush: IntMux port map (FD_out(48),OpcodePlusFunc,rs_data,FD_out(47 downto 32),ResofMux);
-DE: reg generic map(72) port map (DE_in, clk, rst, '1', DE_out);
+DE: reg generic map(73) port map (DE_in, clk, rst, '1', DE_out);
 Ex: Execute port map(DE_out(70 downto 61), DE_out(60 downto 45), DE_out(44 downto 29), DE_out(28 downto 13), DE_out(3 downto 1), DE_out(0), OutputPort, ALUResult, ControllerSignalsofM1, CCROut, CCRFromRTI, RTIBit, BranchFlag);
 end archinteg;

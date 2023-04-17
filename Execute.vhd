@@ -4,7 +4,6 @@ use IEEE.numeric_std.all;
 
 entity Execute is
     port (
-        Reset: IN std_logic;
         ControlSignals : IN std_logic_vector(9 downto 0);
         Rs, Rt, Immediate: IN std_logic_vector(15 downto 0);
         ALUFunction: IN std_logic_vector(2 downto 0);
@@ -56,7 +55,7 @@ begin
                 Immediate when others;
 
     ALUComp: ALU port map(Rs, ALUB, ALUFlags, ALUFunction, ControlSignals(9), ALUResult, OutputBeforeMux);
-    CCRComp: CCR port map(Reset, ALUFlags, ControlSignals(5), BranchFlag);
+    CCRComp: CCR port map(ALUFlags, ControlSignals(5), BranchFlag);
 
     OutputPort <= Rs when ControlSignals(2) = '1';
 
