@@ -15,10 +15,10 @@ entity Reg is
     architecture ArchOfReg of Reg is
     begin
         process(clk, rst) begin
-            if (enable = '1' and rising_edge(clk)) then
+            if rising_edge(clk) then
               if rst = '1' then
                 q <= (others=>'0');
-              else
+              elsif enable = '1' THEN
                 q <= d;
               end if;
             end if;
