@@ -22,13 +22,22 @@ begin
 	process(Reset , WriteEnable , ReadEnable , INTR)
       variable tempAddress : integer := 0; 
     begin 
-    	if Reset = '1' then 
+        
+        if rising_edge(WriteEnable) or rising_edge(ReadEnable) then   
+                latched_address <= address;
+                latched_data <= dataIn; 
+                latched_memWrite <= WriteEnable;
+                latched_memRead <= ReadEnable;
+        end if ;  
+    
+        if Reset = '1' then 
 	        memory <= (others => (others=> '0'));  
             latched_address <= (others => '0'); 
             latched_data <= (others => '0'); 
             latched_memRead <= '0'; 
             latched_memWrite <= '0';   		
  	    ELSIF ReadEnable  = '1' then 
+
                 dataOut(15 downto 0 ) <= memory(to_integer(unsigned(address))); 
                 tempAddress := to_integer(unsigned(address)) + 1; 
                 dataOut(31 downto 16) <= memory(tempAddress);
@@ -42,12 +51,7 @@ begin
                 memory(to_integer(unsigned(address))) <= dataIn(15 downto 0); 
         end if ;
         
-        if rising_edge(WriteEnable) or rising_edge(ReadEnable) then   
-            latched_address <= address;
-            latched_data <= dataIn; 
-            latch_memWrite <= WriteEnable;
-            latch_memRead <= ReadEnable;
-        end if ;      
+           
         
         end if ; 
     end process; 
