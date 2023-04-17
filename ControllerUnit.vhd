@@ -20,7 +20,7 @@ architecture archOfConTrolUnit of ControlUnit is
       out1 : out std_logic_vector(n - 1 downto 0);
       sel : in std_logic
     );
-    end component
+    end component;
   signal temp,temp2:std_logic_vector(9 downto 0); 
 
 begin
