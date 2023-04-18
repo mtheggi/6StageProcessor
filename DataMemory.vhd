@@ -19,13 +19,11 @@ architecture DM of DataMemory is
     signal latched_memRead: std_logic; 
     signal latched_memWrite: std_logic; 
 begin 
-	process(Reset , WriteEnable , ReadEnable , INTR, clk)
+	process(Reset , WriteEnable , ReadEnable , INTR, latched_memWrite, latched_memRead)
       variable tempAddress : integer := 0; 
     begin 
         
-        if rising_edge(WriteEnable) and rising_edge(ReadEnable) then   
-                latched_address <= address;
-                latched_data <= dataIn; 
+        if rising_edge(WriteEnable) or rising_edge(ReadEnable) then
                 latched_memWrite <= WriteEnable;
                 latched_memRead <= ReadEnable;
         end if ;  
@@ -36,14 +34,17 @@ begin
             latched_data <= (others => '0'); 
             latched_memRead <= '0'; 
             latched_memWrite <= '0';   		
- 	    ELSIF ReadEnable  = '1' then 
-
+ 	    ELSIF latched_memRead  = '1' then 
+                latched_address <= address;
+                latched_data <= dataIn; 
                 dataOut(15 downto 0 ) <= memory(to_integer(unsigned(address))); 
                 tempAddress := to_integer(unsigned(address)) + 1; 
                 dataOut(31 downto 16) <= memory(tempAddress);
 
-                latched_address <= address;        
-        ELSIF WriteEnable = '1' then
+                --latched_address <= address;        
+        ELSIF latched_memWrite = '1' then
+            latched_address <= address;
+            latched_data <= dataIn; 
             if INTR  = '1' then  
                 memory(to_integer(unsigned(address))) <= dataIn(15 downto 0); 
                 memory(to_integer(unsigned(address)) + 1) <= dataIn(31 downto 16); 		

@@ -53,6 +53,7 @@ add wave -position end  sim:/integration/EM1/q
 add wave -position end  sim:/integration/DMaddress
 add wave -position 3  sim:/integration/inport
 mem load -i {D:\CCE\Junior Year\Spring 23\CMPN301 - Computer Architecture\Project\6StageProcessor - new\6StageProcessor\testcases.mem} /integration/f/ic/ram
+# mem load -i {D:\collegelectures\Computer Architecture\6StageProcessor\testcases.mem} /integration/f/ic/ram
 force -freeze sim:/integration/clk 0 0, 1 {50 ps} -r 100
 force -freeze sim:/integration/rst 1 0
 force -freeze sim:/integration/int 0 0
