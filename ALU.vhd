@@ -8,7 +8,7 @@ port (
 	ALUOperation: in std_logic;	
 	F : out std_logic_vector(15 downto 0);
 	CCROut : out std_logic_vector(2 downto 0)
-);	-- 2: Carry, 1: Zero, 0: negative
+);	-- 2: Carry, 1: Negative, 0: Zero
 
 end alu;
 
@@ -65,7 +65,7 @@ begin
 				 '0' when others;
 
 	with notMov select
-		CCROut(1 downto 0) <= ZFlag & NFlag when '1',
+		CCROut(1 downto 0) <= NFlag & ZFlag when '1',
 						   CCRIN(1 downto 0) when others;
 		 
 	CarrySelectors1 <= (notMov and sel(2)) & sel(0);

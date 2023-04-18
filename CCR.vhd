@@ -7,7 +7,7 @@ entity CCR is
         CCRData: IN std_logic_vector(2 downto 0);
         FlagSelcetor: in std_logic;
         FlagOutput: out std_logic
-    ); -- 2: Carry, 1: Zero, 0: negative
+    ); -- 2: Carry, 1: Negative, 0: Zero
 end entity CCR;
 
 architecture ControlRegister of CCR is
