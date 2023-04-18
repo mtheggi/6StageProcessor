@@ -94,7 +94,7 @@ signal FD_out, FD_in: std_logic_vector(48 downto 0);
 signal instruction, DMout, DMin: std_logic_vector(31 downto 0);
 signal immediateVal, updated_PC,ResofMux: std_logic_vector(15 downto 0);
 signal identifierBit:  std_logic;
-signal ControllerSignal, ControllerSignalAfterMux: std_logic_vector (9 downto 0);
+signal ControllerSignal, ControlSignalsInEx: std_logic_vector (9 downto 0);
 signal OpcodePlusFunc: std_logic_vector (5 downto 0);
 signal RET_RTI_Dec: std_logic;
 signal DE_in, DE_out: std_logic_vector(72 downto 0);
@@ -113,6 +113,7 @@ EM1_in <= DE_out(72 downto 71) & ControllerSignalsofM1 & CCROut & DE_out(60 down
 OpcodePlusFunc<=instruction(31 downto 29)&AluSelector;
 EM2_in <= EM1_out(50) & EM1_out(55) & EM1_out(52 downto 51) & EM1_out(49) & EM1_out(28 downto 13) & EM1_out(12 downto 10);
 MW_in <= DMout & EM2_out;
+--ControlSignalsInEx <= DE_out(70 downto 67) & ControllerSignal(5) & DE_out(65 downto 61);
 f: fetch port map (rst, clk, ControllerSignal(4), int, rs_data,  updated_PC, instruction);
 FD: Reg generic map(49) port map (FD_in, clk, rst, '1', FD_out);
 d: Decode port map (FD_Out(48), clk, rst, MW_out(20), FD_out(31 downto 0), ControllerSignal, identifierBit, AluSelector, rs, rt, rd, MW_out(2 downto 0), WBResult, immediateVal, rs_data, rt_data,RET_RTI_Dec);--Write en, address, data from WB

@@ -41,41 +41,42 @@ add wave -position 3  sim:/integration/CCROut
 add wave -position end  sim:/integration/DM/memory
 add wave -position 3  sim:/integration/f/p1/current_address
 add wave -position 3  sim:/integration/int
-mem load -filltype value -filldata {0000000000000010 } -fillradix symbolic /integration/f/ic/ram(0)
-mem load -filltype value -filldata {0000000000100000 } -fillradix symbolic /integration/f/ic/ram(1)
-mem load -filltype value -filldata {0100100000000101 } -fillradix symbolic /integration/f/ic/ram(2)
-mem load -filltype value -filldata 0 -fillradix symbolic /integration/f/ic/ram(3)
-mem load -filltype value -filldata 0 -fillradix symbolic /integration/f/ic/ram(4)
-mem load -filltype value -filldata 0 -fillradix symbolic /integration/f/ic/ram(5)
-mem load -filltype value -filldata 0 -fillradix symbolic /integration/f/ic/ram(6)
-mem load -filltype value -filldata 0011000101000101 -fillradix symbolic /integration/f/ic/ram(7)
-mem load -skip 0 -filltype value -filldata {0000000000000000 0000000000000000 0000000000000000 0000000000000000} -fillradix symbolic -startaddress 8 -endaddress 11 /integration/f/ic/ram
-mem load -skip 0 -filltype value -filldata {0000000000000000 0000000000000000 0000000000000000 0000000000000000} -fillradix symbolic -startaddress 8 -endaddress 11 /integration/f/ic/ram
-mem load -filltype value -filldata 0011000101000101 -fillradix symbolic /integration/f/ic/ram(12)
-mem load -filltype value -filldata {0100100000000001 } -fillradix symbolic /integration/f/ic/ram(13)
-mem load -filltype value -filldata {0100100000000010 } -fillradix symbolic /integration/f/ic/ram(14)
-mem load -filltype value -filldata 0100100000000011 -fillradix symbolic /integration/f/ic/ram(15)
-mem load -filltype value -filldata 0100100000000100 -fillradix symbolic /integration/f/ic/ram(16)
-mem load -filltype value -filldata 0100100000000101 -fillradix symbolic /integration/f/ic/ram(17)
-mem load -filltype value -filldata 0 -fillradix symbolic /integration/f/ic/ram(18)
-mem load -filltype value -filldata 1000110010001000 -fillradix symbolic /integration/f/ic/ram(19)
-mem load -filltype value -filldata 0 -fillradix symbolic /integration/f/ic/ram(20)
-mem load -filltype value -filldata {1000110100011000 } -fillradix symbolic /integration/f/ic/ram(21)
-mem load -filltype value -filldata {0 } -fillradix symbolic /integration/f/ic/ram(22)
-mem load -filltype value -filldata {1000110101010000 } -fillradix symbolic /integration/f/ic/ram(23)
-mem load -filltype value -filldata {0011000001000010 } -fillradix symbolic /integration/f/ic/ram(24)
-mem load -filltype value -filldata {0110110000001000 } -fillradix symbolic /integration/f/ic/ram(25)
-mem load -filltype value -filldata {0110110000011111 } -fillradix symbolic /integration/f/ic/ram(27)
-mem load -filltype value -filldata 0 -fillradix symbolic /integration/f/ic/ram(26)
-mem load -filltype value -filldata 0010010010110001 -fillradix symbolic /integration/f/ic/ram(28)
-mem load -filltype value -filldata {0 } -fillradix symbolic /integration/f/ic/ram(29)
-mem load -filltype value -filldata 0 -fillradix symbolic /integration/f/ic/ram(30)
-mem load -filltype value -filldata 0 -fillradix symbolic /integration/f/ic/ram(31)
-mem load -filltype value -filldata 0 -fillradix symbolic /integration/f/ic/ram(32)
-mem load -filltype value -filldata 0011000001000001 -fillradix symbolic /integration/f/ic/ram(33)
-mem load -filltype value -filldata {0 } -fillradix symbolic /integration/f/ic/ram(34)
-mem load -filltype value -filldata 0010010011100101 -fillradix symbolic /integration/f/ic/ram(35)
-mem load -filltype value -filldata 0 -fillradix symbolic -skip 0 -startaddress 36 -endaddress 65535 /integration/f/ic/ram
+# mem load -filltype value -filldata {0000000000000010 } -fillradix symbolic /integration/f/ic/ram(0)
+# mem load -filltype value -filldata {0000000000100000 } -fillradix symbolic /integration/f/ic/ram(1)
+# mem load -filltype value -filldata {0100100000000101 } -fillradix symbolic /integration/f/ic/ram(2)
+# mem load -filltype value -filldata 0 -fillradix symbolic /integration/f/ic/ram(3)
+# mem load -filltype value -filldata 0 -fillradix symbolic /integration/f/ic/ram(4)
+# mem load -filltype value -filldata 0 -fillradix symbolic /integration/f/ic/ram(5)
+# mem load -filltype value -filldata 0 -fillradix symbolic /integration/f/ic/ram(6)
+# mem load -filltype value -filldata 0011000101000101 -fillradix symbolic /integration/f/ic/ram(7)
+# mem load -skip 0 -filltype value -filldata {0000000000000000 0000000000000000 0000000000000000 0000000000000000} -fillradix symbolic -startaddress 8 -endaddress 11 /integration/f/ic/ram
+# mem load -skip 0 -filltype value -filldata {0000000000000000 0000000000000000 0000000000000000 0000000000000000} -fillradix symbolic -startaddress 8 -endaddress 11 /integration/f/ic/ram
+# mem load -filltype value -filldata 0011000101000101 -fillradix symbolic /integration/f/ic/ram(12)
+# mem load -filltype value -filldata {0100100000000001 } -fillradix symbolic /integration/f/ic/ram(13)
+# mem load -filltype value -filldata {0100100000000010 } -fillradix symbolic /integration/f/ic/ram(14)
+# mem load -filltype value -filldata 0100100000000011 -fillradix symbolic /integration/f/ic/ram(15)
+# mem load -filltype value -filldata 0100100000000100 -fillradix symbolic /integration/f/ic/ram(16)
+# mem load -filltype value -filldata 0100100000000101 -fillradix symbolic /integration/f/ic/ram(17)
+# mem load -filltype value -filldata 0 -fillradix symbolic /integration/f/ic/ram(18)
+# mem load -filltype value -filldata 1000110010001000 -fillradix symbolic /integration/f/ic/ram(19)
+# mem load -filltype value -filldata 0 -fillradix symbolic /integration/f/ic/ram(20)
+# mem load -filltype value -filldata {1000110100011000 } -fillradix symbolic /integration/f/ic/ram(21)
+# mem load -filltype value -filldata {0 } -fillradix symbolic /integration/f/ic/ram(22)
+# mem load -filltype value -filldata {1000110101010000 } -fillradix symbolic /integration/f/ic/ram(23)
+# mem load -filltype value -filldata {0011000001000010 } -fillradix symbolic /integration/f/ic/ram(24)
+# mem load -filltype value -filldata {0110110000001000 } -fillradix symbolic /integration/f/ic/ram(25)
+# mem load -filltype value -filldata {0110110000011111 } -fillradix symbolic /integration/f/ic/ram(27)
+# mem load -filltype value -filldata 0 -fillradix symbolic /integration/f/ic/ram(26)
+# mem load -filltype value -filldata 0010010010110001 -fillradix symbolic /integration/f/ic/ram(28)
+# mem load -filltype value -filldata {0 } -fillradix symbolic /integration/f/ic/ram(29)
+# mem load -filltype value -filldata 0 -fillradix symbolic /integration/f/ic/ram(30)
+# mem load -filltype value -filldata 0 -fillradix symbolic /integration/f/ic/ram(31)
+# mem load -filltype value -filldata 0 -fillradix symbolic /integration/f/ic/ram(32)
+# mem load -filltype value -filldata 0011000001000001 -fillradix symbolic /integration/f/ic/ram(33)
+# mem load -filltype value -filldata {0 } -fillradix symbolic /integration/f/ic/ram(34)
+# mem load -filltype value -filldata 0010010011100101 -fillradix symbolic /integration/f/ic/ram(35)
+# mem load -filltype value -filldata 0 -fillradix symbolic -skip 0 -startaddress 36 -endaddress 65535 /integration/f/ic/ram
+mem load -i {D:/collegelectures/Computer Architecture/6StageProcessor/testcases2.mem} /integration/f/ic/ram
 force -freeze sim:/integration/clk 0 0, 1 {50 ps} -r 100
 force -freeze sim:/integration/rst 1 0
 force -freeze sim:/integration/inport 'hFFFE 0
@@ -116,10 +117,10 @@ run
 # ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
 #    Time: 0 ps  Iteration: 0  Instance: /integration/f/ic
 force -freeze sim:/integration/rst 0 0
-run 1600 ps
+run 1350 ps
 force -freeze sim:/integration/inport 'h0001 0
 run
-force -freeze sim:/integration/inport 0000000000001111 0
+force -freeze sim:/integration/inport 'h000f 0
 run
 force -freeze sim:/integration/inport 'h00C8 0
 run
