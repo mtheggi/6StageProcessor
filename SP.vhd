@@ -12,7 +12,7 @@ entity SP is
 end SP;
 
 architecture Behavioral of SP is
-    signal stack_pointer : unsigned(9 downto 0) := "1111111110"; -- 1022 in decimal
+    signal stack_pointer : unsigned(9 downto 0) := "1111111111"; -- 1023 in decimal
 begin
     process (Clk , mem_read, address_select , FunctionCode , INTR)
 	    variable temp_stack_pointer : unsigned(9 downto 0);
