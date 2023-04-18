@@ -22,7 +22,7 @@ architecture DM of DataMemory is
 begin 
     combineReads <= ReadEnable or WriteEnable;
 	process(Reset , combineReads , INTR, latched_memWrite, latched_memRead)
-      variable tempAddress : integer := 0; 
+      variable tempAddress : std_logic_vector(9 downto 0) := (others => '0'); 
     begin 
 	if Reset = '1' then 
 	    memory <= (others => (others=> '0'));  
@@ -30,7 +30,8 @@ begin
             latched_data <= (others => '0'); 
             latched_memRead <= '0'; 
             latched_memWrite <= '0';
-	end if;	
+	end if;
+	tempAddress := std_logic_vector(unsigned(latched_address) - 1); 
         if rising_edge(combineReads)then
                 latched_memWrite <= WriteEnable;
                 latched_memRead <= ReadEnable;
@@ -38,12 +39,11 @@ begin
                 latched_data <= dataIn;   	   		
  	ELSIF latched_memRead  = '1' then  
                 dataOut(15 downto 0 ) <= memory(to_integer(unsigned(latched_address))); 
-                tempAddress := to_integer(unsigned(latched_address)) + 1; 
-                dataOut(31 downto 16) <= memory(tempAddress);      
+                dataOut(31 downto 16) <= memory(to_integer(unsigned(tempAddress)));      
         ELSIF latched_memWrite = '1' then
             if INTR  = '1' then  
                 memory(to_integer(unsigned(latched_address))) <= latched_data(15 downto 0); 
-                memory(to_integer(unsigned(latched_address)) + 1) <= latched_data(31 downto 16); 		
+                memory(to_integer(unsigned(tempAddress))) <= latched_data(31 downto 16); 		
             else 
                 memory(to_integer(unsigned(latched_address))) <= latched_data(15 downto 0); 
             end if ;     
