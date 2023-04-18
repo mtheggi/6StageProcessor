@@ -53,7 +53,7 @@ component Execute is
         ControlSignals : IN std_logic_vector(9 downto 0);
         Rs, Rt, Immediate: IN std_logic_vector(15 downto 0);
         ALUFunction: IN std_logic_vector(2 downto 0);
-        identifierBit: IN std_logic;
+        identifierBit, RST: IN std_logic;
         OutputPort, ALUResult: OUT std_logic_vector(15 downto 0);
         ControllerSignalOut: OUT std_logic_vector(5 downto 0);
         CCROut: out std_logic_vector(2 downto 0); -- For RTI
@@ -118,7 +118,7 @@ FD: Reg generic map(49) port map (FD_in, clk, rst, '1', FD_out);
 d: Decode port map (FD_Out(48), clk, rst, MW_out(20), FD_out(31 downto 0), ControllerSignal, identifierBit, AluSelector, rs, rt, rd, MW_out(2 downto 0), WBResult, immediateVal, rs_data, rt_data,RET_RTI_Dec);--Write en, address, data from WB
 MuxBetWeenIntAndPush: IntMux port map (FD_out(48),OpcodePlusFunc,rs_data,FD_out(47 downto 32),ResofMux);
 DE: reg generic map(73) port map (DE_in, clk, rst, '1', DE_out);
-Ex: Execute port map(DE_out(70 downto 61), DE_out(60 downto 45), DE_out(44 downto 29), DE_out(28 downto 13), DE_out(3 downto 1), DE_out(0), OutputPort, ALUResult, ControllerSignalsofM1, CCROut, MW_out(42 downto 40), MW_out(23), BranchFlag);
+Ex: Execute port map(DE_out(70 downto 61), DE_out(60 downto 45), DE_out(44 downto 29), DE_out(28 downto 13), DE_out(3 downto 1), DE_out(0), rst, OutputPort, ALUResult, ControllerSignalsofM1, CCROut, MW_out(42 downto 40), MW_out(23), BranchFlag);
 stp: SP port map (DE_out(68), clk, int, DE_out(62), DE_out(3 downto 1), SPout);
 EM1: reg generic map(56) port map (EM1_in, clk, rst, '1', EM1_out);
 DM: DataMemory port map (EM1_out(53), EM1_out(52), rst, int, clk, DMaddress, DMin, DMout);
