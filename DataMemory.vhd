@@ -17,16 +17,17 @@ architecture DM of DataMemory is
     signal latched_address : std_logic_vector(9 downto 0);
     signal latched_data : std_logic_vector(31 downto 0); 
     signal latched_memRead: std_logic; 
-    signal latched_memWrite: std_logic; 
+    signal latched_memWrite: std_logic;
+    signal combineReads: std_logic; 
 begin 
+    combineReads <= ReadEnable or WriteEnable;
 	process(Reset , WriteEnable , ReadEnable , INTR, latched_memWrite, latched_memRead)
       variable tempAddress : integer := 0; 
     begin 
-        
-        if rising_edge(WriteEnable) or rising_edge(ReadEnable) then
+        if rising_edge(combineReads)then
                 latched_memWrite <= WriteEnable;
                 latched_memRead <= ReadEnable;
-        end if ;  
+        END IF;
     
         if Reset = '1' then 
 	        memory <= (others => (others=> '0'));  
