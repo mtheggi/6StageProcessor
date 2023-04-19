@@ -20,13 +20,13 @@ architecture archOfIntMux of IntMux is
       sel : in std_logic
     );
     end component;
-    signal Ispush, intOrPush: std_logic; 
+    signal Iscall, intOrCall: std_logic; 
 begin
   with OpcodePlusFunc select
-  Ispush <= '1' when "110000",
+  Iscall <= '1' when "111100",
             '0' when others;
-  intOrPush<= Ispush or   intOp;       
+  intOrCall<= Iscall or intOp;       
  
-  mux1: mux2 GENERIC map(16) port map(Rs,PC,OutofMux,intOrPush);
+  mux1: mux2 GENERIC map(16) port map(Rs,PC,OutofMux,intOrCall);
 
 end archOfIntMux ; -- arch

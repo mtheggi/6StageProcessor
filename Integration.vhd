@@ -108,7 +108,7 @@ signal ControllerSignalsofM1: std_logic_vector(5 downto 0);
 signal SPout, DMaddress: std_logic_vector(9 downto 0);
 begin
 FD_in <= int & updated_PC & instruction;
-DE_in <= RET_RTI_Dec & FD_Out(48) & ControllerSignal & rs_data & rt_data & immediateVal & rs & rt & rd & AluSelector & identifierBit;
+DE_in <= RET_RTI_Dec & FD_Out(48) & ControllerSignal & ResofMux & rt_data & immediateVal & rs & rt & rd & AluSelector & identifierBit;
 EM1_in <= DE_out(72 downto 71) & ControllerSignalsofM1 & CCROut & DE_out(60 downto 45) & ALUResult & DE_out(6 downto 4) & SPout;
 OpcodePlusFunc<=instruction(31 downto 29)&AluSelector;
 EM2_in <= EM1_out(50) & EM1_out(55) & EM1_out(52 downto 51) & EM1_out(49) & EM1_out(28 downto 13) & EM1_out(12 downto 10);
