@@ -25,28 +25,30 @@ begin
       variable tempAddress : std_logic_vector(9 downto 0) := (others => '0'); 
     begin 
 	if Reset = '1' then 
-	    memory <= (others => (others=> '0'));  
             latched_address <= (others => '0'); 
             latched_data <= (others => '0'); 
             latched_memRead <= '0'; 
             latched_memWrite <= '0';
-	end if;
-	tempAddress := std_logic_vector(unsigned(latched_address) - 1); 
-        if rising_edge(combineReads)then
-                latched_memWrite <= WriteEnable;
-                latched_memRead <= ReadEnable;
-		latched_address <= address;
-                latched_data <= dataIn;   	   		
- 	ELSIF rising_edge(clk) and latched_memRead  = '1' then  
+    ELSIF rising_edge(combineReads) then
+            latched_memWrite <= WriteEnable;
+            latched_memRead <= ReadEnable;
+		    latched_address <= address;
+            latched_data <= dataIn;   	   		
+    END IF;
+    tempAddress := std_logic_vector(unsigned(latched_address) - 1); 
+        IF rising_edge(clk) THEN
+ 	        IF latched_memRead  = '1' then  
                 dataOut(15 downto 0 ) <= memory(to_integer(unsigned(latched_address))); 
                 dataOut(31 downto 16) <= memory(to_integer(unsigned(tempAddress)));      
-        ELSIF rising_edge(clk) and latched_memWrite = '1' then
-            if INTR  = '1' then  
-                memory(to_integer(unsigned(latched_address))) <= latched_data(15 downto 0); 
-                memory(to_integer(unsigned(tempAddress))) <= latched_data(31 downto 16); 		
-            else 
-                memory(to_integer(unsigned(latched_address))) <= latched_data(15 downto 0); 
-            end if ;     
-        end if ; 
+
+            ELSIF latched_memWrite = '1' then
+                if INTR  = '1' then  
+                    memory(to_integer(unsigned(latched_address))) <= latched_data(15 downto 0); 
+                    memory(to_integer(unsigned(tempAddress))) <= latched_data(31 downto 16); 		
+                else 
+                    memory(to_integer(unsigned(latched_address))) <= latched_data(15 downto 0); 
+                end if ;     
+            end if ; 
+        end IF;
     end process; 
 end architecture DM;
