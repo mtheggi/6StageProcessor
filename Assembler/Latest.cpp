@@ -38,7 +38,7 @@ string GetInstrutionFromLine(string x, int& index)
     string temp;
     for (int i = 0; i < x.length(); i++)
     {
-        if (x[i] != ' ')
+        if (x[i] != ' ' && x[i] != '\t')
         {
             temp.push_back(x[i]);
         }
@@ -105,12 +105,12 @@ string GetCleanInstrutionsRegisters(string inst, string instr, int index)
     for (int i = index + 1; i < inst.length(); i++)
     {
 
-        if (inst[i] != ' ')
+        if (inst[i] != ' ' && inst[i] != '\t')
         {
             if (inst[i] != ',' && !WaitComma)
             {
                 temp.push_back(inst[i]);
-                if (temp.length() % 2 == 0 && temp[temp.length() - 2] == 'R' && temp[temp.length() - 1] >= '0' && temp[temp.length() - 1] <= '7' && i < inst.length()-1)
+                if (temp.length() % 2 == 0 && temp[temp.length() - 2] == 'R' && temp[temp.length() - 1] >= '0' && temp[temp.length() - 1] <= '7' && i < inst.length() - 1)
                 {
                     WaitComma = true;
                 }
@@ -122,10 +122,10 @@ string GetCleanInstrutionsRegisters(string inst, string instr, int index)
                 WaitComma = false;
             }
         }
-        else if (temp.length() % 2 != 0)
-        {
-            return "XXX";
-        }
+        // else if (temp.length() % 2 != 0)
+        // {
+        //     return "XXX";
+        // }
     }
     return temp;
 }
@@ -220,8 +220,11 @@ string GetFirst16Bit(string inst, string instr, map<string, string> DecodingMap,
     return temp;
 }
 string ConvertHexToBin(string hex)
-{
-
+{   
+    while (hex.size()<4)
+    {
+        hex='0'+hex;
+    }
     string temp;
     for (int i = 0; i < 4; i++)
     {
@@ -301,7 +304,6 @@ void WriteConfig()
     cout << "// memory data file (do not edit the following line - required for mem load use)\n";
     cout << "// instance=/integration/f/ic/ram\n";
     cout << "// format=mti addressradix=d dataradix=s version=1.0 wordsperline=1" << endl;
-    cout << "   0: 0000000000000010\n   1: 0000000000100000" << endl;
 };
 int CheckOrg(string x, int index)
 {
@@ -310,7 +312,7 @@ int CheckOrg(string x, int index)
     int TempIndex = index;
     for (int i = TempIndex; i < x.length(); i++)
     {
-        if (x[i] == ' ')
+        if (x[i] == ' ' && x[i] != '\t')
         {
             TempIndex++;
         }
@@ -340,8 +342,13 @@ void CheckComment(string& inst) {
     if (x != -1) {
         inst = inst.substr(0, x);
     }
-
 }
+void CheckTab(string& inst) {
+    int x = inst.find('\t');
+    if (x != -1) {
+        inst = inst.substr(0, x);
+    }
+};
 int main()
 {
     freopen("MainCode.text", "r", stdin);
@@ -358,6 +365,7 @@ int main()
     while (getline(cin, inst))
     {
         CheckComment(inst);
+        CheckTab(inst);
         if (!inst.empty())
         {
             int index = 0;
@@ -367,6 +375,14 @@ int main()
             if (instr == ".ORG")
             {
                 int tempCount = CheckOrg(inst, index);
+                if (tempCount == 0 || tempCount == 1) {
+                    getline(cin, inst);
+                    CheckTab(inst);
+                    CheckComment(inst);
+                    Instructions.push_back(make_pair(tempCount, ConvertHexToBin(inst)));
+                    length+=2;
+                    continue;
+                }
                 if (tempCount == -1)
                 {
                     NoErrorFlag = false;
@@ -396,7 +412,7 @@ int main()
                     cout << "Error in Line number: " << length << endl;
                     break;
                 }
-                Instructions.push_back(make_pair(count++,_16BitString));
+                Instructions.push_back(make_pair(count++, _16BitString));
             }
             else
             {
@@ -408,8 +424,8 @@ int main()
                     cout << "Error in Line number: " << length << endl;
                     break;
                 }
-                Instructions.push_back(make_pair(count++,First16Bit));
-                Instructions.push_back(make_pair(count++,Second16Bit));
+                Instructions.push_back(make_pair(count++, First16Bit));
+                Instructions.push_back(make_pair(count++, Second16Bit));
             }
         }
         length++;
@@ -421,10 +437,10 @@ int main()
     {
 
         WriteConfig();
-        sort(Instructions.begin(),Instructions.end());
-        for ( auto it:Instructions)
+        sort(Instructions.begin(), Instructions.end());
+        for (auto it : Instructions)
         {
-            cout << "   " << it.first << ": " <<  it.second<< endl;
+            cout << "   " << it.first << ": " << it.second << endl;
         }
     }
     else {
