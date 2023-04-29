@@ -6,27 +6,27 @@
 #include <algorithm>
 using namespace std;
 
-void CreatingHashingTableForRegisterMap(map<string, string> &mp)
+void CreatingHashingTableForRegisterMap(map<string, string>& mp)
 {
-    vector<string> RegAddress{"000", "001", "010", "011", "100", "101", "110", "111"};
+    vector<string> RegAddress{ "000", "001", "010", "011", "100", "101", "110", "111" };
     for (int i = 0; i < 8; i++)
     {
         string temp = to_string(i);
         mp["R" + temp] = RegAddress[i];
     }
 };
-void CreatingHashingTable(map<string, string> &mp)
+void CreatingHashingTable(map<string, string>& mp)
 {
 
     // according to Control signal Table
-    vector<string> InstrutionsOpCodeAndFunc{"000000", "000001", "000010", "001000", "001100",
+    vector<string> InstrutionsOpCodeAndFunc{ "000000", "000001", "000010", "001000", "001100",
                                             "001101", "001011", "001110", "001111", "001001", "001010", "001110", "001011",
                                             "010001", "010010", "011011", "100011", "101000", "101001", "101100", "110000",
-                                            "110001", "111100", "111101", "111111"};
+                                            "110001", "111100", "111101", "111111" };
     vector<string> InstrSet{
         "NOP", "SETC", "CLRC", "NOT", "INC", "DEC", "MOV", "ADD", "SUB", "AND", "OR",
         "IADD", "LDM", "OUT", "IN", "LDD", "STD", "JC", "JZ", "JMP", "PUSH", "POP", "CALL",
-        "RET", "RTI"};
+        "RET", "RTI" };
 
     for (int i = 0; i < 25; i++)
     {
@@ -34,7 +34,7 @@ void CreatingHashingTable(map<string, string> &mp)
         mp[InstrSet[i]] = InstrutionsOpCodeAndFunc[i];
     }
 };
-string GetInstrutionFromLine(string x, int &index)
+string GetInstrutionFromLine(string x, int& index)
 {
     string temp;
     for (int i = 0; i < x.length(); i++)
@@ -346,7 +346,7 @@ int CheckOrg(string x, int index)
     int dec = ConvertHexToDec(temp);
     return dec;
 }
-void CheckComment(string &inst)
+void CheckComment(string& inst)
 {
     int x = inst.find('#');
     if (x != -1)
@@ -354,7 +354,7 @@ void CheckComment(string &inst)
         inst = inst.substr(0, x);
     }
 }
-void CheckTab(string &inst)
+void CheckTab(string& inst)
 {
     int x = inst.find('\t');
     if (x != -1)
@@ -362,16 +362,16 @@ void CheckTab(string &inst)
         inst = inst.substr(0, x);
     }
 };
-char * OpenFile()
+char* OpenFile(FILE*& fi)
 {
     cout << "Please Enter The name Of File: ";
     string nameofFile, InputFile, OutputFile;
     cin >> nameofFile;
     InputFile = nameofFile + ".txt";
     const int len = InputFile.length();
-    char *char_array = new char[len + 1];
+    char* char_array = new char[len + 1];
     strcpy(char_array, InputFile.c_str());
-    freopen(char_array, "r", stdin);
+    fi = freopen(char_array, "r", stdin);
     OutputFile = nameofFile + ".mem";
     strcpy(char_array, OutputFile.c_str());
     return char_array;
@@ -379,17 +379,17 @@ char * OpenFile()
 
 int main()
 {
- 
+
     map<string, string> DecodingMap, RegistersMap;
     string inst;
     int length = 1, count = 2, WhereisError;
     bool NoErrorFlag = true;
     vector<pair<int, string>> Instructions;
-    
-    char* filename = OpenFile();
+    FILE* fi;
+    char* filename = OpenFile(fi);
     CreatingHashingTable(DecodingMap);
     CreatingHashingTableForRegisterMap(RegistersMap);
-   
+
     while (getline(cin, inst))
     {
         CheckComment(inst);
@@ -461,7 +461,7 @@ int main()
     }
     if (NoErrorFlag)
         cout << "Success" << endl;
-    freopen(filename, "w", stdout);
+    FILE* fp = freopen(filename, "w", stdout);
     if (NoErrorFlag)
     {
 
@@ -476,4 +476,9 @@ int main()
     {
         cout << " THERE IS ERROR";
     }
+    fclose(fp);
+    fclose(fi);
+    printf("Hello again, world\n");
+    char a;
+    cin >> a;
 }
