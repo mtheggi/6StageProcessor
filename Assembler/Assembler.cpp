@@ -283,6 +283,14 @@ string ConvertHexToBin(string hex)
     }
     return temp;
 }
+int ConvertHexToDec(string hex) {
+    int dec = 0;
+    for (int i = 0; i <= hex.size() - 1; i++) {
+        dec *= 16;
+        dec += (hex[i] >= 'A') ? hex[i] - 'A' + 10 : hex[i] - '0';
+    }
+    return dec;
+}
 string GetSecond16Bit(string inst, string instr, int index)
 {
 
@@ -324,7 +332,7 @@ int CheckOrg(string x, int index)
     }
     for (int i = TempIndex; i < x.length(); i++)
     {
-        if (x[i] >= '0' && x[i] <= '9')
+        if (x[i] >= '0' && x[i] <= '9' || x[i] >= 'A' && x[i] <= 'F')
         {
             if (Flag)
                 return -1;
@@ -335,8 +343,8 @@ int CheckOrg(string x, int index)
             Flag = true;
         }
     }
-
-    return stoi(temp);
+    int dec = ConvertHexToDec(temp);
+    return dec;
 }
 void CheckComment(string &inst)
 {
@@ -354,16 +362,19 @@ void CheckTab(string &inst)
         inst = inst.substr(0, x);
     }
 };
-void OpenFile()
+char * OpenFile()
 {
     cout << "Please Enter The name Of File: ";
-    string nameofFile;
+    string nameofFile, InputFile, OutputFile;
     cin >> nameofFile;
-    nameofFile = nameofFile + ".txt";
-    const int len = nameofFile.length();
+    InputFile = nameofFile + ".txt";
+    const int len = InputFile.length();
     char *char_array = new char[len + 1];
-    strcpy(char_array, nameofFile.c_str());
+    strcpy(char_array, InputFile.c_str());
     freopen(char_array, "r", stdin);
+    OutputFile = nameofFile + ".mem";
+    strcpy(char_array, OutputFile.c_str());
+    return char_array;
 };
 
 int main()
@@ -375,7 +386,7 @@ int main()
     bool NoErrorFlag = true;
     vector<pair<int, string>> Instructions;
     
-    OpenFile();
+    char* filename = OpenFile();
     CreatingHashingTable(DecodingMap);
     CreatingHashingTableForRegisterMap(RegistersMap);
    
@@ -450,7 +461,7 @@ int main()
     }
     if (NoErrorFlag)
         cout << "Success" << endl;
-    freopen("program.mem", "w", stdout);
+    freopen(filename, "w", stdout);
     if (NoErrorFlag)
     {
 
