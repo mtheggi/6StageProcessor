@@ -88,6 +88,12 @@ component WriteBackMux is
    
   ) ;
 end component;
+component Branch is
+    port (
+        BranchFlag, UncondJump, BranchSignal: in std_logic;
+        UpdateSelector: out std_logic
+    );
+end component Branch;
 signal AluSelector, rs, rt, rd: std_logic_vector(2 downto 0);
 signal rs_data, rt_data: std_logic_vector(15 downto 0);
 signal FD_out, FD_in: std_logic_vector(48 downto 0);
@@ -102,7 +108,7 @@ signal EM1_in, EM1_out: std_logic_vector(55 downto 0);
 signal EM2_in, EM2_out: std_logic_vector(23 downto 0);
 signal MW_in, MW_out: std_logic_vector(55 downto 0);
 signal CCROut: std_logic_vector(2 downto 0);
-signal BranchFlag: std_logic;
+signal BranchFlag, UpdateSelector, rst_or_flush: std_logic;
 signal ALUResult, WBResult: std_logic_vector(15 downto 0);
 signal ControllerSignalsofM1: std_logic_vector(5 downto 0);
 signal SPout, DMaddress: std_logic_vector(9 downto 0);
@@ -114,11 +120,13 @@ OpcodePlusFunc<=instruction(31 downto 29)&AluSelector;
 EM2_in <= EM1_out(50) & EM1_out(55) & EM1_out(52 downto 51) & EM1_out(49) & EM1_out(28 downto 13) & EM1_out(12 downto 10);
 MW_in <= DMout & EM2_out;
 --ControlSignalsInEx <= DE_out(70 downto 67) & ControllerSignal(5) & DE_out(65 downto 61);
-f: fetch port map (rst, clk, ControllerSignal(4), int, rs_data,  updated_PC, instruction);
+f: fetch port map (rst, clk, UpdateSelector, int, rs_data,  updated_PC, instruction);
 FD: Reg generic map(49) port map (FD_in, clk, rst, '1', FD_out);
 d: Decode port map (FD_Out(48), clk, rst, MW_out(20), FD_out(31 downto 0), ControllerSignal, identifierBit, AluSelector, rs, rt, rd, MW_out(2 downto 0), WBResult, immediateVal, rs_data, rt_data,RET_RTI_Dec);--Write en, address, data from WB
 MuxBetWeenIntAndPush: IntMux port map (FD_out(48),OpcodePlusFunc,rs_data,FD_out(47 downto 32),ResofMux);
-DE: reg generic map(73) port map (DE_in, clk, rst, '1', DE_out);
+Br: Branch port map (BranchFlag, ControllerSignal(0), ControllerSignal(4), UpdateSelector);
+rst_or_flush <= rst or UpdateSelector;
+DE: reg generic map(73) port map (DE_in, clk, rst_or_flush, '1', DE_out);
 Ex: Execute port map(DE_out(70 downto 61), DE_out(60 downto 45), DE_out(44 downto 29), DE_out(28 downto 13), DE_out(3 downto 1), DE_out(0), rst, OutputPort, ALUResult, ControllerSignalsofM1, CCROut, MW_out(42 downto 40), MW_out(23), BranchFlag);
 stp: SP port map (DE_out(68), clk, int, DE_out(62), DE_out(3 downto 1), SPout);
 EM1: reg generic map(56) port map (EM1_in, clk, rst, '1', EM1_out);
