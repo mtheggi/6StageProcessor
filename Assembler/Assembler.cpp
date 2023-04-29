@@ -362,7 +362,7 @@ void CheckTab(string& inst)
         inst = inst.substr(0, x);
     }
 };
-char* OpenFile(FILE*& fi)
+char* OpenFile()
 {
     cout << "Please Enter The name Of File: ";
     string nameofFile, InputFile, OutputFile;
@@ -371,7 +371,7 @@ char* OpenFile(FILE*& fi)
     const int len = InputFile.length();
     char* char_array = new char[len + 1];
     strcpy(char_array, InputFile.c_str());
-    fi = freopen(char_array, "r", stdin);
+    freopen(char_array, "r", stdin);
     OutputFile = nameofFile + ".mem";
     strcpy(char_array, OutputFile.c_str());
     return char_array;
@@ -385,8 +385,7 @@ int main()
     int length = 1, count = 2, WhereisError;
     bool NoErrorFlag = true;
     vector<pair<int, string>> Instructions;
-    FILE* fi;
-    char* filename = OpenFile(fi);
+    char* filename = OpenFile();
     CreatingHashingTable(DecodingMap);
     CreatingHashingTableForRegisterMap(RegistersMap);
 
@@ -476,9 +475,4 @@ int main()
     {
         cout << " THERE IS ERROR";
     }
-    fclose(fp);
-    fclose(fi);
-    printf("Hello again, world\n");
-    char a;
-    cin >> a;
 }

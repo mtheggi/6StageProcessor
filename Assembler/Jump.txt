@@ -14,7 +14,7 @@
 .org 1
 20							# data value 20hex so memory content M[1]=20h
 
-.org 100
+.org 10A
 IN R5			#R5 = FFFE --> add FFFE on the in port, flags no change
 NOP
 NOP
