@@ -51,7 +51,7 @@ end component;
 component Execute is
     port (
         ControlSignals : IN std_logic_vector(9 downto 0);
-        Rs, Rt, Immediate: IN std_logic_vector(15 downto 0);
+        ALUA, ALUB: IN std_logic_vector(15 downto 0);
         ALUFunction: IN std_logic_vector(2 downto 0);
         identifierBit, RST: IN std_logic;
         OutputPort, ALUResult: OUT std_logic_vector(15 downto 0);
@@ -62,6 +62,20 @@ component Execute is
         BranchFlag: out std_logic
     );
 end component;
+
+component forwardingUnit is
+  port (
+    RsAddress, RtAddress: IN std_logic_vector(2 downto 0);
+    ALUImmSrc: IN std_logic;
+    RegWriteFromM1, RegWriteFromM2, RegWriteFromWB: IN std_logic;
+    MemReadFromM1, MemReadFromM2: IN std_logic;
+    RdFromM1, RdFromM2, RdFromWB: IN std_logic_vector(2 downto 0);
+    Operand1Sel: OUT std_logic_vector(1 downto 0);
+    Operand2Sel: OUT std_logic_vector(2 downto 0);
+    LDUse: OUT std_logic
+);
+  end component;
+
 component SP is
     Port ( 
            mem_read ,Clk, INTR : in STD_LOGIC;
@@ -82,8 +96,8 @@ component DataMemory is
 end component;
 component WriteBackMux is
   port (
-    res,memoryData,inportData: in std_logic_vector(15 downto 0);
-    memSelector,inPortSelector:in std_logic;
+    res,memoryData: in std_logic_vector(15 downto 0);
+    memSelector:in std_logic;
     MuxRes: out std_logic_vector(15 downto 0)
    
   ) ;
@@ -109,9 +123,13 @@ signal EM2_in, EM2_out: std_logic_vector(23 downto 0);
 signal MW_in, MW_out: std_logic_vector(55 downto 0);
 signal CCROut: std_logic_vector(2 downto 0);
 signal BranchFlag, UpdateSelector, rst_or_flush: std_logic;
-signal ALUResult, WBResult: std_logic_vector(15 downto 0);
+signal ALUResult1, ALUResult, WBResult: std_logic_vector(15 downto 0);
 signal ControllerSignalsofM1: std_logic_vector(5 downto 0);
 signal SPout, DMaddress: std_logic_vector(9 downto 0);
+signal ALUA, ALUB: std_logic_vector(15 downto 0);
+signal Operand1Sel: std_logic_vector(1 downto 0);
+signal Operand2Sel: std_logic_vector(2 downto 0);
+signal LDUse: std_logic;
 begin
 FD_in <= int & updated_PC & instruction;
 DE_in <= RET_RTI_Dec & FD_Out(48) & ControllerSignal & ResofMux & rt_data & immediateVal & rs & rt & rd & AluSelector & identifierBit;
@@ -127,7 +145,9 @@ MuxBetWeenIntAndPush: IntMux port map (FD_out(48),OpcodePlusFunc,rs_data,FD_out(
 Br: Branch port map (BranchFlag, ControllerSignal(0), ControllerSignal(4), UpdateSelector);
 rst_or_flush <= rst or UpdateSelector;
 DE: reg generic map(73) port map (DE_in, clk, rst_or_flush, '1', DE_out);
-Ex: Execute port map(DE_out(70 downto 61), DE_out(60 downto 45), DE_out(44 downto 29), DE_out(28 downto 13), DE_out(3 downto 1), DE_out(0), rst, OutputPort, ALUResult, ControllerSignalsofM1, CCROut, MW_out(42 downto 40), MW_out(23), BranchFlag);
+Ex: Execute port map(DE_out(70 downto 61), ALUA, ALUB, DE_out(3 downto 1), DE_out(0), rst, OutputPort, ALUResult1, ControllerSignalsofM1, CCROut, MW_out(42 downto 40), MW_out(23), BranchFlag);
+ALUResult <= inport when DE_out(64) = '1' else ALUResult1;
+FWUnit: forwardingUnit port map(DE_out(12 downto 10), DE_out(9 downto 7), DE_out(0), EM1_out(51), EM2_out(20), MW_out(20), EM1_out(52), EM2_out(21), EM1_out(12 downto 10), EM2_out(2 downto 0), MW_out(2 downto 0), Operand1Sel, Operand2Sel, LDUse);
 stp: SP port map (DE_out(68), clk, int, DE_out(62), DE_out(3 downto 1), SPout);
 EM1: reg generic map(56) port map (EM1_in, clk, rst, '1', EM1_out);
 DM: DataMemory port map (EM1_out(53), EM1_out(52), rst, int, clk, DMaddress, DMin, DMout);
@@ -136,5 +156,19 @@ DMin <= "0000000000000" & EM1_out(47 downto 45) & EM1_out(44 downto 29);
 DMaddress <= EM1_out(22 downto 13) when EM1_out(48) = '0'
 	     else EM1_out(9 downto 0);
 MW: reg generic map(56) port map (MW_in, clk, rst, '1', MW_out);
-WB: WriteBackMux port map (MW_out(18 downto 3),MW_out(39 downto 24), inport, MW_out(21), MW_out(19), WBResult);
+WB: WriteBackMux port map (MW_out(18 downto 3),MW_out(39 downto 24), MW_out(21), WBResult);
+
+with Operand1Sel select
+        ALUA <= EM1_out(28 downto 13) when "01",
+                EM2_out(18 downto 3) when "10",
+                MW_out(18 downto 3) when "11",
+                DE_out(60 downto 45) when others;
+
+with Operand2Sel select
+        ALUB <= DE_out(28 downto 13) when "001",
+                EM1_out(28 downto 13) when "010",
+                EM2_out(18 downto 3) when "011",
+                MW_out(18 downto 3) when "100",
+                DE_out(44 downto 29) when others;
+
 end archinteg;

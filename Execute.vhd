@@ -5,7 +5,7 @@ use IEEE.numeric_std.all;
 entity Execute is
     port (
         ControlSignals : IN std_logic_vector(9 downto 0);
-        Rs, Rt, Immediate: IN std_logic_vector(15 downto 0);
+        ALUA, ALUB: IN std_logic_vector(15 downto 0);
         ALUFunction: IN std_logic_vector(2 downto 0);
         identifierBit, RST: IN std_logic;
         OutputPort, ALUResult: OUT std_logic_vector(15 downto 0);
@@ -35,7 +35,6 @@ architecture Exec of Execute is
         );
     end component;
 
-    signal ALUB: std_logic_vector(15 downto 0);
     signal ALUFlags, ALUFlagsTemp, OutputBeforeMux: std_logic_vector(2 downto 0);
     signal STCorCLC: std_logic;
     signal MuxSelector: std_logic_vector(1 downto 0);
@@ -45,21 +44,17 @@ begin
     ControllerSignalOut <= ControlSignals(8 downto 6) & currentRTIBit & ControlSignals(3) & ControlSignals(1);
     CCROut <= ALUFlags;
     currentRTIBit <= ControlSignals(7) and ControlSignals(1) and ALUFunction(2) and ALUFunction(1) and ALUFunction(0);
-    -- MemWrite<=ControllerSignal(4);
-    -- MemRead<=ControllerSignal(3);
-    -- RegWrite<=ControllerSignal(2);
-    -- RTI Bit
+    -- MemWrite<=ControllerSignal(5);
+    -- MemRead<=ControllerSignal(4);
+    -- RegWrite<=ControllerSignal(3);
+    -- RTI Bit (2)
     -- InEnb<=ControllerSignal(1);
     -- AddressSelector<=ControllerSignal(0);
 
-    with identifierBit select
-        ALUB <= Rt when '0',
-                Immediate when others;
-
-    ALUComp: ALU port map(Rs, ALUB, ALUFlags, ALUFunction, ControlSignals(9), ALUResult, OutputBeforeMux);
+    ALUComp: ALU port map(ALUA, ALUB, ALUFlags, ALUFunction, ControlSignals(9), ALUResult, OutputBeforeMux);
     CCRComp: CCR port map(ALUFlags, ControlSignals(5), BranchFlag);
 
-    OutputPort <= Rs when ControlSignals(2) = '1'
+    OutputPort <= ALUA when ControlSignals(2) = '1'
                  else (others => '0') when rst='1';
 
     STCorCLC <= (not (ControlSignals(8) or ControlSignals(7) or ControlSignals(6) or ControlSignals(4)) or ControlSignals(2)) and (ALUFunction(1) or ALUFunction(0));

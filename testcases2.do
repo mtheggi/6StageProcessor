@@ -117,7 +117,7 @@ run
 # ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
 #    Time: 0 ps  Iteration: 0  Instance: /integration/f/ic
 force -freeze sim:/integration/rst 0 0
-run 1350 ps
+run 650 ps
 force -freeze sim:/integration/inport 'h0001 0
 run
 force -freeze sim:/integration/inport 'h000f 0
