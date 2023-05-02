@@ -137,12 +137,11 @@ EM1_in <= DE_out(72 downto 71) & ControllerSignalsofM1 & CCROut & DE_out(60 down
 OpcodePlusFunc<=instruction(31 downto 29)&AluSelector;
 EM2_in <= EM1_out(50) & EM1_out(55) & EM1_out(52 downto 51) & EM1_out(49) & EM1_out(28 downto 13) & EM1_out(12 downto 10);
 MW_in <= DMout & EM2_out;
---ControlSignalsInEx <= DE_out(70 downto 67) & ControllerSignal(5) & DE_out(65 downto 61);
-f: fetch port map (rst, clk, UpdateSelector, int, rs_data,  updated_PC, instruction);
+f: fetch port map (rst, clk, UpdateSelector, int, ALUA,  updated_PC, instruction);
 FD: Reg generic map(49) port map (FD_in, clk, rst, '1', FD_out);
 d: Decode port map (FD_Out(48), clk, rst, MW_out(20), FD_out(31 downto 0), ControllerSignal, identifierBit, AluSelector, rs, rt, rd, MW_out(2 downto 0), WBResult, immediateVal, rs_data, rt_data,RET_RTI_Dec);--Write en, address, data from WB
 MuxBetWeenIntAndPush: IntMux port map (FD_out(48),OpcodePlusFunc,rs_data,FD_out(47 downto 32),ResofMux);
-Br: Branch port map (BranchFlag, ControllerSignal(0), ControllerSignal(4), UpdateSelector);
+Br: Branch port map (BranchFlag, DE_out(61), DE_out(65), UpdateSelector);
 rst_or_flush <= rst or UpdateSelector;
 DE: reg generic map(73) port map (DE_in, clk, rst_or_flush, '1', DE_out);
 Ex: Execute port map(DE_out(70 downto 61), ALUA, ALUB, DE_out(3 downto 1), DE_out(0), rst, OutputPort, ALUResult1, ControllerSignalsofM1, CCROut, MW_out(42 downto 40), MW_out(23), BranchFlag);
