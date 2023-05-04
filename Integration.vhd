@@ -108,6 +108,14 @@ component Branch is
         UpdateSelector: out std_logic
     );
 end component Branch;
+
+component HazardDetectionUnit is
+    Port (
+        Ex_memRead , Ex_memWrite , M1_memRead  , M1_memWrite , loadUse     : in  std_logic;
+        reset       : out std_logic
+    );
+end component HazardDetectionUnit;
+
 signal AluSelector, rs, rt, rd: std_logic_vector(2 downto 0);
 signal rs_data, rt_data: std_logic_vector(15 downto 0);
 signal FD_out, FD_in: std_logic_vector(48 downto 0);
@@ -130,7 +138,13 @@ signal ALUA, ALUB: std_logic_vector(15 downto 0);
 signal Operand1Sel: std_logic_vector(1 downto 0);
 signal Operand2Sel: std_logic_vector(2 downto 0);
 signal LDUse: std_logic;
+-- 
+signal BufferResetFromHDU : std_logic;  
+--
 begin
+-- 
+HDU : HazardDetectionUnit port map(DE_out(69) ,DE_out(68) , EM1_out (53) ,EM1_out (52) , LDUse, BufferResetFromHDU  );
+-- 
 FD_in <= int & updated_PC & instruction;
 DE_in <= RET_RTI_Dec & FD_Out(48) & ControllerSignal & ResofMux & rt_data & immediateVal & rs & rt & rd & AluSelector & identifierBit;
 EM1_in <= DE_out(72 downto 71) & ControllerSignalsofM1 & CCROut & DE_out(60 downto 45) & ALUResult & DE_out(6 downto 4) & SPout;
