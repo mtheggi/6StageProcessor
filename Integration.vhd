@@ -117,6 +117,13 @@ component HazardDetectionUnit is
     );
 end component HazardDetectionUnit;
 
+component CounterHazard is
+  Port ( clk : in STD_LOGIC;
+           RET_RTI : in STD_LOGIC;
+	   stall: out STD_LOGIC
+	);
+end component CounterHazard;
+
 signal AluSelector, rs, rt, rd: std_logic_vector(2 downto 0);
 signal rs_data, rt_data: std_logic_vector(15 downto 0);
 signal FD_out, FD_in: std_logic_vector(48 downto 0);
@@ -138,7 +145,7 @@ signal SPout, DMaddress: std_logic_vector(9 downto 0);
 signal ALUA, ALUB: std_logic_vector(15 downto 0);
 signal Operand1Sel: std_logic_vector(1 downto 0);
 signal Operand2Sel: std_logic_vector(2 downto 0);
-signal LDUse: std_logic;
+signal LDUse, RETstall, FDEnable: std_logic;
 signal selectPC: std_logic;
 -- 
 signal BufferResetFromHDU, EM1_RST, HDU_Enable: std_logic; 
@@ -154,8 +161,9 @@ OpcodePlusFunc<=instruction(31 downto 29)&AluSelector;
 EM2_in <= EM1_out(50) & EM1_out(55) & EM1_out(52 downto 51) & EM1_out(49) & EM1_out(28 downto 13) & EM1_out(12 downto 10);
 MW_in <= DMout & EM2_out;
 f: fetch port map (HDU_Enable, rst, clk, UpdateSelector, int, MW_out(22), ALUA, WBResult, updated_PC, instruction);
-FD: Reg generic map(49) port map (FD_in, clk, rst_or_flush, HDU_Enable, FD_out);
+FD: Reg generic map(49) port map (FD_in, clk, rst_or_flush, FDEnable, FD_out);
 d: Decode port map (FD_Out(48), clk, rst, MW_out(20), FD_out(31 downto 0), ControllerSignal, identifierBit, AluSelector, rs, rt, rd, MW_out(2 downto 0), WBResult, immediateVal, rs_data, rt_data,RET_RTI_Dec, selectPC);--Write en, address, data from WB
+HazardCount: CounterHazard port map(clk, RET_RTI_Dec, RETstall);
 MuxBetWeenIntAndPush: IntMux port map (selectPC,OpcodePlusFunc,rs_data,FD_out(47 downto 32),ResofMux);
 Br: Branch port map (BranchFlag, DE_out(61), DE_out(65), UpdateSelector);
 rst_or_flush <= rst or UpdateSelector;
@@ -188,4 +196,5 @@ with Operand2Sel select
 
 EM1_RST <= rst or BufferResetFromHDU;
 HDU_Enable <= not EM1_RST;
+FDEnable <= HDU_Enable or not RETstall;
 end archinteg;
