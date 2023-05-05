@@ -19,7 +19,10 @@ IN R5			#R5 = FFFE --> add FFFE on the in port, flags no change
 INC R5,R5 		#R5 = FFFF, C--> no change, N --> 1, Z --> no change
 INC R5,R5 		#R5 = 0000, C--> 1, N --> 0, Z --> 1
 IN R3			#R3 = 200 --> add 200 on the in port, flags no change
-JC R3	
-.org 200                     				
-JMP  R0						
+Call R3
+
+.org 200
+RET
+
+						
 
