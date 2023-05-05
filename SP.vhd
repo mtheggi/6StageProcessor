@@ -17,7 +17,7 @@ begin
     process (Clk , mem_read, address_select , FunctionCode , INTR)
 	    variable temp_stack_pointer : unsigned(9 downto 0);
     begin
-        if rising_edge(clk) then 
+        if falling_edge(clk) then 
             if address_select = '1' then
                 -- Interrupt case push PC + Flags 
                 -- RTI pop PC + Flags 

@@ -13,14 +13,14 @@ end integration;
 
 architecture archinteg of integration is
 component fetch is
-port( rst, clk, branch, int:in std_logic;
-	branch_update: in std_logic_vector ( 15 downto 0);
+port( rst, clk, branch, int, RET_RTI:in std_logic;
+	branch_update, RET_RTI_update: in std_logic_vector ( 15 downto 0);
 	updated_PC: out std_logic_vector ( 15 downto 0);
       inst: out std_logic_vector(31 downto 0));
 end component;
 component Decode is
   port (
-    int, clk, rst, WriteEnable: in std_logic;
+    int,clk, rst, WriteEnable: in std_logic;
     inst: in std_logic_vector(31 downto 0);
     ControllerSignal: out std_logic_vector(9 downto 0);
     identifierBit: out std_logic;
@@ -28,8 +28,9 @@ component Decode is
     WriteAddress: in std_logic_vector(2 downto 0);
     WriteData: in std_logic_vector(15 downto 0);
     immediateVal, ReadPort1, ReadPort2: out std_logic_vector(15 downto 0);
-    RET_RTI_sig: out std_logic
+    RET_RTI_sig, selectPC: out std_logic
   ) ;
+
 end component;
 component IntMux is
     port (
@@ -138,6 +139,7 @@ signal ALUA, ALUB: std_logic_vector(15 downto 0);
 signal Operand1Sel: std_logic_vector(1 downto 0);
 signal Operand2Sel: std_logic_vector(2 downto 0);
 signal LDUse: std_logic;
+signal selectPC: std_logic;
 -- 
 signal BufferResetFromHDU : std_logic;  
 --
@@ -151,10 +153,10 @@ EM1_in <= DE_out(72 downto 71) & ControllerSignalsofM1 & CCROut & DE_out(60 down
 OpcodePlusFunc<=instruction(31 downto 29)&AluSelector;
 EM2_in <= EM1_out(50) & EM1_out(55) & EM1_out(52 downto 51) & EM1_out(49) & EM1_out(28 downto 13) & EM1_out(12 downto 10);
 MW_in <= DMout & EM2_out;
-f: fetch port map (rst, clk, UpdateSelector, int, ALUA,  updated_PC, instruction);
-FD: Reg generic map(49) port map (FD_in, clk, rst, '1', FD_out);
-d: Decode port map (FD_Out(48), clk, rst, MW_out(20), FD_out(31 downto 0), ControllerSignal, identifierBit, AluSelector, rs, rt, rd, MW_out(2 downto 0), WBResult, immediateVal, rs_data, rt_data,RET_RTI_Dec);--Write en, address, data from WB
-MuxBetWeenIntAndPush: IntMux port map (FD_out(48),OpcodePlusFunc,rs_data,FD_out(47 downto 32),ResofMux);
+f: fetch port map (rst, clk, UpdateSelector, int, MW_out(22), ALUA, WBResult, updated_PC, instruction);
+FD: Reg generic map(49) port map (FD_in, clk, rst_or_flush, '1', FD_out);
+d: Decode port map (FD_Out(48), clk, rst, MW_out(20), FD_out(31 downto 0), ControllerSignal, identifierBit, AluSelector, rs, rt, rd, MW_out(2 downto 0), WBResult, immediateVal, rs_data, rt_data,RET_RTI_Dec, selectPC);--Write en, address, data from WB
+MuxBetWeenIntAndPush: IntMux port map (selectPC,OpcodePlusFunc,rs_data,FD_out(47 downto 32),ResofMux);
 Br: Branch port map (BranchFlag, DE_out(61), DE_out(65), UpdateSelector);
 rst_or_flush <= rst or UpdateSelector;
 DE: reg generic map(73) port map (DE_in, clk, rst_or_flush, '1', DE_out);

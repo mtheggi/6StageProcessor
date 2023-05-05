@@ -9,7 +9,7 @@ entity ControlUnit is
   AluSelector: out std_logic_vector(2 downto 0);
   int : in std_logic;
   ControllerSignal: out std_logic_vector(9 downto 0);
-  RTI_RET : out std_logic
+  RTI_RET, selectPC : out std_logic
   ) ;
 end ControlUnit;
 
@@ -24,6 +24,7 @@ architecture archOfConTrolUnit of ControlUnit is
     end component;
   signal temp,temp2:std_logic_vector(9 downto 0); 
   signal RTIDetectTemp:std_logic_vector(5 downto 0);
+  signal selPC: std_logic;
 begin
   RTIDetectTemp <= (opCode&Func) ; 
   RTI_RET <= '1' when RTIDetectTemp = "111101" or RTIDetectTemp = "111111" else '0';
@@ -35,13 +36,13 @@ Else "011000000" When opCode = "011"
 Else "100000000" When opCode = "100"
 Else "000"&Func(0)&"1000"&Func(2) When opCode = "101"
 Else Not Func(0)& Func(0)& Func(0)&"000010" When opCode = "110"
-Else Not Func(0)& Func(0)&"0010011" When opCode = "111"
+Else Not Func(0)& Func(0)&"0000011" When opCode = "111"
 Else "000000000";
 
 --AluOperation
 temp(9) <= '1' when opCode="001"
                else '0';
-temp2<="0100000011";
+temp2<="0100010011";
 -- ALUOPeration<=temp(9);
 -- MemWrite<=temp(8);
 -- MemRead<=temp(7);
@@ -52,6 +53,9 @@ temp2<="0100000011";
 -- OutEnb<=temp(2);
 -- AddressSelector<=temp(1);
 -- UncondBranch<=temp(0);
-mux1: mux2 GENERIC map(10) port map(temp,temp2,ControllerSignal,int);
+selPC <= '1' when (int='1' or RTIDetectTemp = "111100")
+	else '0';
+mux1: mux2 GENERIC map(10) port map(temp,temp2,ControllerSignal,selPC);
 AluSelector<=Func;
+selectPC <= selPC;
 end archOfConTrolUnit ; -- archOfConTrolUnit
