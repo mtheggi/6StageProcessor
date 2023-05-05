@@ -1,11 +1,12 @@
 .ORG 0
+10
+.org 10
 IN R6
 ADD R1,R1,R6
 DEC R7,R1
 RTI
 IN R5
 
-.ORG 20
 IN R2 
 IN R0
 LDM R0,0 
