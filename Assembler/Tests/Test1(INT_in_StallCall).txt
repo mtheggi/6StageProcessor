@@ -4,6 +4,7 @@
 .org 1
 42
 
+.org 42
 IN R6
 ADD R1,R1
 DEC R7
@@ -16,11 +17,13 @@ DEC R0
 JZ R6
 RET
 DEC R7
-.ORG 20
-IN R1 ;32
+
+.ORG 130
+IN R1 
 LDM R7,1 
 LDM R2,96 
 call R2 
+
 DEC R7
 IN R0
 INC R3
