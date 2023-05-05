@@ -4,7 +4,7 @@ use IEEE.numeric_std.all;
 
 entity SP is
     Port ( 
-           mem_read ,Clk, INTR : in STD_LOGIC;
+           en, mem_read ,Clk, INTR : in STD_LOGIC;
            address_select : in STD_LOGIC;
            FunctionCode : in std_logic_vector(2 downto 0) ; 
            data_out : out STD_LOGIC_VECTOR (9 downto 0)        
@@ -18,6 +18,7 @@ begin
 	    variable temp_stack_pointer : unsigned(9 downto 0);
     begin
         if falling_edge(clk) then 
+	if en = '1' then
             if address_select = '1' then
                 -- Interrupt case push PC + Flags 
                 -- RTI pop PC + Flags 
@@ -41,7 +42,8 @@ begin
                     stack_pointer <= temp_stack_pointer;
 		end if;
 	    else data_out <= std_logic_vector(stack_pointer);
-            end if;
+	    end if;
+           end if;
         end if; 
     end process; 
  end Behavioral;

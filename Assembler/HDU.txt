@@ -1,0 +1,13 @@
+# This is our testcase
+.org 0
+130
+.org 1
+42
+.org 130
+IADD R1, R1, 9
+INC R1, R1
+PUSH R1
+PUSH R1
+POP R2
+POP R7
+PUSH R4

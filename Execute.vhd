@@ -64,7 +64,7 @@ begin
     with MuxSelector select
         ALUFlagsTemp <= OutputBeforeMux when "00",
                     (ALUFunction(0) & ALUFlags(1 downto 0)) when "01",
-                    CCRFromRTI when "10"
+                    CCRFromRTI when "10",
                     ALUFlagsTemp when others;
     
     ALUFlags <= (others => '0') when rst='1'
