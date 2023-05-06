@@ -53,6 +53,7 @@ temp2<="0100010011";
 -- OutEnb<=temp(2);
 -- AddressSelector<=temp(1);
 -- UncondBranch<=temp(0);
+-- Determine if call from Opcode & func
 selPC <= '1' when (int='1' or RTIDetectTemp = "111100")
 	else '0';
 mux1: mux2 GENERIC map(10) port map(temp,temp2,ControllerSignal,selPC);
