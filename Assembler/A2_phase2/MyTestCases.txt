@@ -1,6 +1,6 @@
 # This is our testcase
 .org 0
-130
+5
 .org 1
 42
 .org 5
@@ -19,18 +19,18 @@ OR R1, R1, R1
 IADD R1, R2, AFDE
 SUB R2, R1, R7
 AND R7, R6, R1
-LDM R1, AB9D
+LDM R1, 300
+jmp R1
 .org 300
 OUT R1
 IN R1
 LDD R2, R1
 STD R2, R1
-JC R1
-JZ R2
-JMP R3
+LDM R3, 100
+SUB R2, R2, R2
+JZ R3
 .org 100
 PUSH R1
 POP R3
 CaLL R2
 RET
-RTI
