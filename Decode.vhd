@@ -12,7 +12,8 @@ entity Decode is
     WriteAddress: in std_logic_vector(2 downto 0);
     WriteData: in std_logic_vector(15 downto 0);
     immediateVal, ReadPort1, ReadPort2: out std_logic_vector(15 downto 0);
-    RET_RTI_sig, selectPC: out std_logic
+    RET_RTI_sig, selectPC: out std_logic;
+    ValidRs, ValidRt: out std_logic
   ) ;
 
 end Decode;
@@ -20,12 +21,13 @@ end Decode;
 architecture archOfDecode of Decode is
 component ControlUnit is
   port (
-  opCode,Func: in std_logic_vector(2 downto 0);
-  AluSelector: out std_logic_vector(2 downto 0);
-  int : in std_logic;
-  ControllerSignal: out std_logic_vector(9 downto 0);
-  RTI_RET, selectPC : out std_logic
-  ) ;
+    opCode,Func: in std_logic_vector(2 downto 0);
+    AluSelector: out std_logic_vector(2 downto 0);
+    int, identifierBit : in std_logic;
+    ControllerSignal: out std_logic_vector(9 downto 0);
+    RTI_RET, selectPC : out std_logic;
+    ValidRs, ValidRt: out std_logic
+    );
 end component;
 component RegistersFile is
     generic (n: integer:= 16);
@@ -55,7 +57,7 @@ begin
     rd<=rd_sig;
     immediateVal<=imm_sig;
 
-    CU: ControlUnit port map(opcode, func, AluSelector, int ,ControllerSignal , RET_RTI_sig, selectPC);
+    CU: ControlUnit port map(opcode, func, AluSelector, int, inst(25), ControllerSignal , RET_RTI_sig, selectPC, ValidRs, ValidRt);
 
     RF: RegistersFile port map(WriteData, ReadPort1, ReadPort2, WriteAddress, rs_sig, rt_sig, clk, rst, WriteEnable);
 end archOfDecode ; -- archOfDecode

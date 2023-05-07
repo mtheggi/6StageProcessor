@@ -7,9 +7,10 @@ entity ControlUnit is
   port (
   opCode,Func: in std_logic_vector(2 downto 0);
   AluSelector: out std_logic_vector(2 downto 0);
-  int : in std_logic;
+  int, identifierBit : in std_logic;
   ControllerSignal: out std_logic_vector(9 downto 0);
-  RTI_RET, selectPC : out std_logic
+  RTI_RET, selectPC : out std_logic;
+  ValidRs, ValidRt: out std_logic
   ) ;
 end ControlUnit;
 
@@ -25,6 +26,7 @@ architecture archOfConTrolUnit of ControlUnit is
   signal temp,temp2:std_logic_vector(9 downto 0); 
   signal RTIDetectTemp:std_logic_vector(5 downto 0);
   signal selPC: std_logic;
+  signal integerOpcode, integerFunction: integer;
 begin
   RTIDetectTemp <= (opCode&Func) ; 
   RTI_RET <= '1' when RTIDetectTemp = "111101" or RTIDetectTemp = "111111" else '0';
@@ -59,4 +61,14 @@ selPC <= '1' when (int='1' or RTIDetectTemp = "111100")
 mux1: mux2 GENERIC map(10) port map(temp,temp2,ControllerSignal,selPC);
 AluSelector<=Func;
 selectPC <= selPC;
+integerOpcode <= to_integer(unsigned(opCode));
+integerFunction <= to_integer(unsigned(Func));
+ValidRt <= '1' when integerOpcode = 3 or integerOpcode = 4 or (integerOpcode = 1 and identifierBit = '1' and
+                    ((integerFunction > 0 and integerFunction < 4) or integerFunction = 7 or integerFunction = 6))
+              else '0';
+
+ValidRs <= '0' when integerOpcode = 0 or RTIDetectTemp = "111101" or RTIDetectTemp = "111111"
+                    or RTIDetectTemp = "001011" or RTIDetectTemp = "010010" or RTIDetectTemp = "011011" or RTIDetectTemp = "110001"
+              else '1';
+
 end archOfConTrolUnit ; -- archOfConTrolUnit

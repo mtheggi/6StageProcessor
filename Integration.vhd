@@ -28,7 +28,8 @@ component Decode is
     WriteAddress: in std_logic_vector(2 downto 0);
     WriteData: in std_logic_vector(15 downto 0);
     immediateVal, ReadPort1, ReadPort2: out std_logic_vector(15 downto 0);
-    RET_RTI_sig, selectPC: out std_logic
+    RET_RTI_sig, selectPC: out std_logic;
+    ValidRs, ValidRt: out std_logic
   ) ;
 
 end component;
@@ -67,6 +68,7 @@ end component;
 component forwardingUnit is
   port (
     RsAddress, RtAddress: IN std_logic_vector(2 downto 0);
+    ValidRs, ValidRt: in std_logic;
     ALUImmSrc: IN std_logic;
     RegWriteFromM1, RegWriteFromM2, RegWriteFromWB: IN std_logic;
     MemReadFromM1, MemReadFromM2: IN std_logic;
@@ -133,7 +135,7 @@ signal identifierBit:  std_logic;
 signal ControllerSignal, ControlSignalsInEx: std_logic_vector (9 downto 0);
 signal OpcodePlusFunc: std_logic_vector (5 downto 0);
 signal RET_RTI_Dec: std_logic;
-signal DE_in, DE_out: std_logic_vector(89 downto 0);
+signal DE_in, DE_out: std_logic_vector(91 downto 0);
 signal EM1_in, EM1_out: std_logic_vector(55 downto 0);
 signal EM2_in, EM2_out: std_logic_vector(23 downto 0);
 signal MW_in, MW_out: std_logic_vector(55 downto 0);
@@ -147,6 +149,7 @@ signal Operand1Sel: std_logic_vector(1 downto 0);
 signal Operand2Sel: std_logic_vector(2 downto 0);
 signal LDUse, RETstall, FDEnable, FDReset: std_logic;
 signal selectPC: std_logic;
+signal ValidRs, ValidRt: std_logic;
 -- 
 signal BufferResetFromHDU, EM1_RST, HDU_Enable: std_logic; 
 --
@@ -155,21 +158,21 @@ begin
 HDU : HazardDetectionUnit port map(DE_out(69) ,DE_out(68) , EM1_out (53) ,EM1_out (52) , LDUse, BufferResetFromHDU  );
 -- 
 FD_in <= int & updated_PC & instruction;
-DE_in <= selectPC & FD_Out(47 downto 32) & RET_RTI_Dec & FD_Out(48) & ControllerSignal & rs_data & rt_data & immediateVal & rs & rt & rd & AluSelector & identifierBit;
+DE_in <= ValidRs & ValidRt & selectPC & FD_Out(47 downto 32) & RET_RTI_Dec & FD_Out(48) & ControllerSignal & rs_data & rt_data & immediateVal & rs & rt & rd & AluSelector & identifierBit;
 EM1_in <= DE_out(72 downto 71) & ControllerSignalsofM1 & CCROut & DMdata & ALUResult & DE_out(6 downto 4) & SPout;
 OpcodePlusFunc<=instruction(31 downto 29)&AluSelector;
 EM2_in <= EM1_out(50) & EM1_out(55) & EM1_out(52 downto 51) & EM1_out(49) & EM1_out(28 downto 13) & EM1_out(12 downto 10);
 MW_in <= DMout & EM2_out;
 f: fetch port map (HDU_Enable, rst, clk, UpdateSelector, int, MW_out(22), ALUA, WBResult, updated_PC, instruction);
 FD: Reg generic map(49) port map (FD_in, clk, FDReset, FDEnable, FD_out);
-d: Decode port map (FD_Out(48), clk, rst, MW_out(20), FD_out(31 downto 0), ControllerSignal, identifierBit, AluSelector, rs, rt, rd, MW_out(2 downto 0), WBResult, immediateVal, rs_data, rt_data,RET_RTI_Dec, selectPC);--Write en, address, data from WB
+d: Decode port map (FD_Out(48), clk, rst, MW_out(20), FD_out(31 downto 0), ControllerSignal, identifierBit, AluSelector, rs, rt, rd, MW_out(2 downto 0), WBResult, immediateVal, rs_data, rt_data,RET_RTI_Dec, selectPC, ValidRs, ValidRt);--Write en, address, data from WB
 HazardCount: CounterHazard port map(clk, RET_RTI_Dec, RETstall);
 Br: Branch port map (BranchFlag, DE_out(61), DE_out(65), UpdateSelector);
 rst_or_flush <= rst or UpdateSelector;
-DE: reg generic map(90) port map (DE_in, clk, rst_or_flush, HDU_Enable, DE_out);
+DE: reg generic map(92) port map (DE_in, clk, rst_or_flush, HDU_Enable, DE_out);
 Ex: Execute port map(DE_out(70 downto 61), ALUA, ALUB, DE_out(3 downto 1), DE_out(0), rst, OutputPort, ALUResult1, ControllerSignalsofM1, CCROut, MW_out(42 downto 40), MW_out(23), BranchFlag);
 ALUResult <= inport when DE_out(64) = '1' else ALUResult1;
-FWUnit: forwardingUnit port map(DE_out(12 downto 10), DE_out(9 downto 7), DE_out(0), EM1_out(51), EM2_out(20), MW_out(20), EM1_out(52), EM2_out(21), EM1_out(12 downto 10), EM2_out(2 downto 0), MW_out(2 downto 0), Operand1Sel, Operand2Sel, LDUse);
+FWUnit: forwardingUnit port map(DE_out(12 downto 10), DE_out(9 downto 7), DE_out(91), DE_out(90), DE_out(0), EM1_out(51), EM2_out(20), MW_out(20), EM1_out(52), EM2_out(21), EM1_out(12 downto 10), EM2_out(2 downto 0), MW_out(2 downto 0), Operand1Sel, Operand2Sel, LDUse);
 stp: SP port map (HDU_Enable, DE_out(68), clk, int, DE_out(62), DE_out(3 downto 1), SPout);
 EM1: reg generic map(56) port map (EM1_in, clk, EM1_RST, '1', EM1_out);
 DM: DataMemory port map (EM1_out(53), EM1_out(52), rst, int, clk, DMaddress, DMin, DMout);
