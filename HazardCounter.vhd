@@ -20,7 +20,7 @@ begin
 		temp <= std_logic_vector(unsigned(temp) - 1);
 	end if;
         if RET_RTI = '1' then
-            temp <= "0011";
+            temp <= "0100";
         end if;
     end process;
     

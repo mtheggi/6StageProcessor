@@ -1,0 +1,13 @@
+// memory data file (do not edit the following line - required for mem load use)
+// instance=/integration/f/ic/ram
+// format=mti addressradix=d dataradix=s version=1.0 wordsperline=1
+   0: 0000000100001010
+   1: 0000000000100000
+   266: 0100100000000101
+   267: 0011000101000101
+   268: 0011000101000101
+   269: 0100100000000011
+   270: 1111000011000000
+   271: 0011000011000011
+   512: 0011010011000011
+   513: 1111010000000000
