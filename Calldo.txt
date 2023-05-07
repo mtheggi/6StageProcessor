@@ -31,7 +31,8 @@ vsim work.integration
 # Loading work.sp(behavioral)
 # Loading work.datamemory(dm)
 # Loading work.writebackmux(archofwritebackmux)
-mem load -i {D:/CCE/Junior Year/Spring 23/CMPN301 - Computer Architecture/Project/6StageProcessor - new/6StageProcessor/Assembler/jump.mem} /integration/f/ic/ram
+mem load -i {D:\collegelectures\Computer Architecture\6StageProcessor\jump.mem} /integration/f/ic/ram
+#mem load -i {D:\collegelectures\Computer Architecture\6StageProcessor\jump.mem} /integration/f/ic/ram
 #mem load -i {D:/CCE/Junior Year/Spring 23/CMPN301 - Computer Architecture/Project/6StageProcessor - new/6StageProcessor/Assembler/HDU.mem} /integration/f/ic/ram
 add wave -position end  sim:/integration/d/RF/out1
 add wave -position end  sim:/integration/d/RF/out2
