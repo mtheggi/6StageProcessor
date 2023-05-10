@@ -13,7 +13,7 @@ entity RegistersFile is
 end entity RegistersFile;
 
 architecture ArchOfRegistersFile of RegistersFile is
-    component Reg is
+    component Reg11 is
         GENERIC (n: integer:= 16);
         port(	
             d : IN std_logic_vector(n-1 DOWNTO 0);
@@ -44,14 +44,14 @@ architecture ArchOfRegistersFile of RegistersFile is
 begin
     
    notCLk <= not CLK;
-   reg1 :Reg GENERIC MAP(n) PORT MAP(WritePort, notCLk, RST, en(0), out1);
-   reg2 :Reg GENERIC MAP(n) PORT MAP(WritePort, notCLk, RST, en(1), out2);
-   reg3 :Reg GENERIC MAP(n) PORT MAP(WritePort, notCLk, RST, en(2), out3);
-   reg4 :Reg GENERIC MAP(n) PORT MAP(WritePort, notCLk, RST, en(3), out4);
-   reg5 :Reg GENERIC MAP(n) PORT MAP(WritePort, notCLk, RST, en(4), out5);
-   reg6 :Reg GENERIC MAP(n) PORT MAP(WritePort, notCLk, RST, en(5), out6);
-   reg7 :Reg GENERIC MAP(n) PORT MAP(WritePort, notCLk, RST, en(6), out7);
-   reg8 :Reg GENERIC MAP(n) PORT MAP(WritePort, notCLk, RST, en(7), out8);
+   reg1 :Reg11 GENERIC MAP(n) PORT MAP(WritePort, notCLk, RST, en(0), out1);
+   reg2 :Reg11 GENERIC MAP(n) PORT MAP(WritePort, notCLk, RST, en(1), out2);
+   reg3 :Reg11 GENERIC MAP(n) PORT MAP(WritePort, notCLk, RST, en(2), out3);
+   reg4 :Reg11 GENERIC MAP(n) PORT MAP(WritePort, notCLk, RST, en(3), out4);
+   reg5 :Reg11 GENERIC MAP(n) PORT MAP(WritePort, notCLk, RST, en(4), out5);
+   reg6 :Reg11 GENERIC MAP(n) PORT MAP(WritePort, notCLk, RST, en(5), out6);
+   reg7 :Reg11 GENERIC MAP(n) PORT MAP(WritePort, notCLk, RST, en(6), out7);
+   reg8 :Reg11 GENERIC MAP(n) PORT MAP(WritePort, notCLk, RST, en(7), out8);
     ReadMux1: mux8 GENERIC MAP(n) PORT MAP(out1, out2, out3, out4, out5, out6, out7, out8, ReadPort1, ReadAddress1);
     ReadMux2: mux8 GENERIC MAP(n) PORT MAP(out1, out2, out3, out4, out5, out6, out7, out8, ReadPort2, ReadAddress2);
 	 

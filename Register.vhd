@@ -16,11 +16,13 @@ entity Reg is
     begin
         process(clk, rst) begin
             if rising_edge(clk) then
-              if rst = '1' then
-                q <= (others=>'0');
-              elsif enable = '1' THEN
-                q <= d;
+              if enable = '1' THEN
+                if rst = '1' then
+                  q <= (others=>'0');
+                else
+                  q <= d;
               end if;
+            end if;
             end if;
           end process;
     end ArchOfReg ; -- ArchOfReg

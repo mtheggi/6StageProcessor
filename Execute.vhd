@@ -7,7 +7,7 @@ entity Execute is
         ControlSignals : IN std_logic_vector(9 downto 0);
         ALUA, ALUB: IN std_logic_vector(15 downto 0);
         ALUFunction: IN std_logic_vector(2 downto 0);
-        identifierBit, RST: IN std_logic;
+        identifierBit, RST, clk: IN std_logic;
         OutputPort, ALUResult: OUT std_logic_vector(15 downto 0);
         ControllerSignalOut: OUT std_logic_vector(5 downto 0);
         CCROut: out std_logic_vector(2 downto 0); -- For RTI
@@ -29,20 +29,19 @@ architecture Exec of Execute is
     end component;
     component CCR  is
         port (
-            CCRData: IN std_logic_vector(2 downto 0);
-            FlagSelcetor: in std_logic;
-            FlagOutput: out std_logic
-        );
+            CCRDataIn: IN std_logic_vector(2 downto 0);
+            clk, rst, enable: IN std_logic;
+            CCRDataOut: out std_logic_vector(2 downto 0)
+        ); -- 2: Carry, 1: Negative, 0: Zero
     end component;
 
-    signal ALUFlags, ALUFlagsTemp, OutputBeforeMux: std_logic_vector(2 downto 0);
+    signal ALUFlags,CCROut1, OutputBeforeMux: std_logic_vector(2 downto 0);
     signal STCorCLC: std_logic;
     signal MuxSelector: std_logic_vector(1 downto 0);
     signal currentRTIBit: std_logic;
-    
+    signal CCREnable: std_logic;
 begin
     ControllerSignalOut <= ControlSignals(8 downto 6) & currentRTIBit & ControlSignals(3) & ControlSignals(1);
-    CCROut <= ALUFlags;
     currentRTIBit <= ControlSignals(7) and ControlSignals(1) and ALUFunction(2) and ALUFunction(1) and ALUFunction(0);
     -- MemWrite<=ControllerSignal(5);
     -- MemRead<=ControllerSignal(4);
@@ -52,7 +51,13 @@ begin
     -- AddressSelector<=ControllerSignal(0);
 
     ALUComp: ALU port map(ALUA, ALUB, ALUFlags, ALUFunction, ControlSignals(9), ALUResult, OutputBeforeMux);
-    CCRComp: CCR port map(ALUFlags, ControlSignals(5), BranchFlag);
+    CCRComp: CCR port map(ALUFlags, clk, rst, CCREnable, CCROut1);
+
+    CCROut <= CCROut1;
+
+    CCREnable <= (not MuxSelector(0)) or (not MuxSelector(1));
+    BranchFlag <= CCROut1(2) when ControlSignals(5) = '0'
+                            else CCROut1(0);
 
     OutputPort <= ALUA when ControlSignals(2) = '1'
                  else (others => '0') when rst='1';
@@ -62,12 +67,9 @@ begin
                     else '0' & STCorCLC;
     
     with MuxSelector select
-        ALUFlagsTemp <= OutputBeforeMux when "00",
+        ALUFlags <= OutputBeforeMux when "00",
                     (ALUFunction(0) & ALUFlags(1 downto 0)) when "01",
                     CCRFromRTI when "10",
-                    ALUFlagsTemp when others;
-    
-    ALUFlags <= (others => '0') when rst='1'
-                else ALUFlagsTemp;
+                    (others => '0') when others;
     
 end architecture Exec;

@@ -4,7 +4,7 @@ use IEEE.numeric_std.all;
 
 entity CounterHazard is
     Port ( clk : in STD_LOGIC;
-           RET_RTI : in STD_LOGIC;
+           RET_RTI, enable : in STD_LOGIC;
 	   stall: out STD_LOGIC
 	);
 	   
@@ -17,7 +17,9 @@ begin
     process (clk, RET_RTI)
     begin
 	if  (rising_edge(clk) and to_integer(unsigned(temp)) > 0) then
-		temp <= std_logic_vector(unsigned(temp) - 1);
+        if enable = '1' then
+		    temp <= std_logic_vector(unsigned(temp) - 1);
+        end if;
 	end if;
         if RET_RTI = '1' then
             temp <= "0100";

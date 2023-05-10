@@ -55,7 +55,7 @@ component Execute is
         ControlSignals : IN std_logic_vector(9 downto 0);
         ALUA, ALUB: IN std_logic_vector(15 downto 0);
         ALUFunction: IN std_logic_vector(2 downto 0);
-        identifierBit, RST: IN std_logic;
+        identifierBit, RST, clk: IN std_logic;
         OutputPort, ALUResult: OUT std_logic_vector(15 downto 0);
         ControllerSignalOut: OUT std_logic_vector(5 downto 0);
         CCROut: out std_logic_vector(2 downto 0); -- For RTI
@@ -121,7 +121,7 @@ end component HazardDetectionUnit;
 
 component CounterHazard is
   Port ( clk : in STD_LOGIC;
-           RET_RTI : in STD_LOGIC;
+           RET_RTI, enable : in STD_LOGIC;
 	   stall: out STD_LOGIC
 	);
 end component CounterHazard;
@@ -149,7 +149,7 @@ signal Operand1Sel: std_logic_vector(1 downto 0);
 signal Operand2Sel: std_logic_vector(2 downto 0);
 signal LDUse, RETstall, FDEnable, FDReset: std_logic;
 signal selectPC: std_logic;
-signal ValidRs, ValidRt: std_logic;
+signal ValidRs, ValidRt, NotBufferReset: std_logic;
 -- 
 signal BufferResetFromHDU, EM1_RST, HDU_Enable: std_logic; 
 --
@@ -170,7 +170,7 @@ HazardCount: CounterHazard port map(clk, RET_RTI_Dec, RETstall);
 Br: Branch port map (BranchFlag, DE_out(61), DE_out(65), UpdateSelector);
 rst_or_flush <= rst or UpdateSelector;
 DE: reg generic map(92) port map (DE_in, clk, rst_or_flush, HDU_Enable, DE_out);
-Ex: Execute port map(DE_out(70 downto 61), ALUA, ALUB, DE_out(3 downto 1), DE_out(0), rst, OutputPort, ALUResult1, ControllerSignalsofM1, CCROut, MW_out(42 downto 40), MW_out(23), BranchFlag);
+Ex: Execute port map(DE_out(70 downto 61), ALUA, ALUB, DE_out(3 downto 1), DE_out(0), rst, clk, OutputPort, ALUResult1, ControllerSignalsofM1, CCROut, MW_out(42 downto 40), MW_out(23), BranchFlag);
 ALUResult <= inport when DE_out(64) = '1' else ALUResult1;
 FWUnit: forwardingUnit port map(DE_out(12 downto 10), DE_out(9 downto 7), DE_out(91), DE_out(90), DE_out(0), EM1_out(51), EM2_out(20), MW_out(20), EM1_out(52), EM2_out(21), EM1_out(12 downto 10), EM2_out(2 downto 0), MW_out(2 downto 0), Operand1Sel, Operand2Sel, LDUse);
 stp: SP port map (HDU_Enable, DE_out(68), clk, int, DE_out(62), DE_out(3 downto 1), SPout);
@@ -197,7 +197,8 @@ with Operand2Sel select
                 DE_out(44 downto 29) when others;
 
 EM1_RST <= rst or BufferResetFromHDU;
-HDU_Enable <= not EM1_RST;
+HDU_Enable <= rst or NotBufferReset;
+NotBufferReset <= not BufferResetFromHDU;
 FDEnable <= HDU_Enable;
 FDReset <= rst or RETstall or UpdateSelector;
 DMdata <= DE_out(88 downto 73) when DE_out(89) = '1'
