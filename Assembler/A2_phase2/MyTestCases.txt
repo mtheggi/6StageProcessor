@@ -32,5 +32,9 @@ JZ R3
 .org 100
 PUSH R1
 POP R3
+LDM R3, 2
 CaLL R2
+.org 2
+STD R1, R1
+STD R1, R1
 RET
