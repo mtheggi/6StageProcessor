@@ -117,6 +117,7 @@ add wave -position end  sim:/integration/RETstall
 add wave -position end  sim:/integration/EM1/q
 add wave -position 30  sim:/integration/DMdata
 add wave -position 31  sim:/integration/ALUA
+add wave -position 44  sim:/integration/HazardCount/RET_RTI
 add wave -position 6  sim:/integration/Br/UpdateSelector
 #add wave -position end  sim:/integration/Ex/ALUComp/notMov
 #add wave -position end  sim:/integration/Ex/ALUComp/CCRIN

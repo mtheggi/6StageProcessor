@@ -166,7 +166,7 @@ MW_in <= DMout & EM2_out;
 f: fetch port map (HDU_Enable, rst, clk, UpdateSelector, int, MW_out(22), ALUA, WBResult, updated_PC, instruction);
 FD: Reg generic map(49) port map (FD_in, clk, FDReset, FDEnable, FD_out);
 d: Decode port map (FD_Out(48), clk, rst, MW_out(20), FD_out(31 downto 0), ControllerSignal, identifierBit, AluSelector, rs, rt, rd, MW_out(2 downto 0), WBResult, immediateVal, rs_data, rt_data,RET_RTI_Dec, selectPC, ValidRs, ValidRt);--Write en, address, data from WB
-HazardCount: CounterHazard port map(clk, RET_RTI_Dec, RETstall);
+HazardCount: CounterHazard port map(clk, RET_RTI_Dec, DE_out(72),RETstall);
 Br: Branch port map (BranchFlag, DE_out(61), DE_out(65), UpdateSelector);
 rst_or_flush <= rst or UpdateSelector;
 DE: reg generic map(92) port map (DE_in, clk, rst_or_flush, HDU_Enable, DE_out);
