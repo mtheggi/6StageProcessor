@@ -17,7 +17,7 @@ begin
     process (clk, RET_RTI)
     begin
 	if  (rising_edge(clk) and to_integer(unsigned(temp)) > 0) then
-        if enable = '1' then
+        if enable = '0' then
 		    temp <= std_logic_vector(unsigned(temp) - 1);
         end if;
 	end if;
