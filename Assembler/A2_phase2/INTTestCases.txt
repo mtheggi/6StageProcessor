@@ -1,0 +1,9 @@
+.org 0
+5
+.org 1
+42
+.org 42
+IADD R3, R2, 100
+OR R2, R2, R3
+STD R2, R3
+RTI

@@ -44,7 +44,7 @@ Else "000000000";
 --AluOperation
 temp(9) <= '1' when opCode="001"
                else '0';
-temp2<="0100010011";
+temp2<="0100000011";
 -- ALUOPeration<=temp(9);
 -- MemWrite<=temp(8);
 -- MemRead<=temp(7);
@@ -63,7 +63,7 @@ AluSelector<=Func;
 selectPC <= selPC;
 integerOpcode <= to_integer(unsigned(opCode));
 integerFunction <= to_integer(unsigned(Func));
-ValidRt <= '1' when integerOpcode = 3 or integerOpcode = 4 or (integerOpcode = 1 and identifierBit = '1' and
+ValidRt <= '1' when integerOpcode = 3 or integerOpcode = 4 or (integerOpcode = 1 and identifierBit = '0' and
                     ((integerFunction > 0 and integerFunction < 4) or integerFunction = 7 or integerFunction = 6))
               else '0';
 
