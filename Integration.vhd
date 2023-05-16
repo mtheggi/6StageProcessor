@@ -193,7 +193,7 @@ with Operand2Sel select
         ALUB <= DE_out(28 downto 13) when "001",
                 EM1_out(28 downto 13) when "010",
                 EM2_out(18 downto 3) when "011",
-                MW_out(18 downto 3) when "100",
+                WBResult when "100",  --MW_out(18 downto 3) 
                 DE_out(44 downto 29) when others;
 
 EM1_RST <= rst or BufferResetFromHDU;
