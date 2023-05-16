@@ -39,3 +39,6 @@ CaLL R2
 STD R1, R1
 STD R1, R1
 RET
+
+.org 42
+RTI
