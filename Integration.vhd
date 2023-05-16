@@ -173,9 +173,9 @@ DE: reg generic map(92) port map (DE_in, clk, rst_or_flush, HDU_Enable, DE_out);
 Ex: Execute port map(DE_out(70 downto 61), ALUA, ALUB, DE_out(3 downto 1), DE_out(0), rst, clk, OutputPort, ALUResult1, ControllerSignalsofM1, CCROut, MW_out(42 downto 40), MW_out(23), BranchFlag);
 ALUResult <= inport when DE_out(64) = '1' else ALUResult1;
 FWUnit: forwardingUnit port map(DE_out(12 downto 10), DE_out(9 downto 7), DE_out(91), DE_out(90), DE_out(0), EM1_out(51), EM2_out(20), MW_out(20), EM1_out(52), EM2_out(21), EM1_out(12 downto 10), EM2_out(2 downto 0), MW_out(2 downto 0), Operand1Sel, Operand2Sel, LDUse);
-stp: SP port map (HDU_Enable, DE_out(68), clk, int, DE_out(62), DE_out(3 downto 1), SPout);
+stp: SP port map (HDU_Enable, DE_out(68), clk, DE_out(71), DE_out(62), DE_out(3 downto 1), SPout);
 EM1: reg generic map(56) port map (EM1_in, clk, EM1_RST, '1', EM1_out);
-DM: DataMemory port map (EM1_out(53), EM1_out(52), rst, int, clk, DMaddress, DMin, DMout);
+DM: DataMemory port map (EM1_out(53), EM1_out(52), rst, EM1_out(54), clk, DMaddress, DMin, DMout);
 EM2: reg generic map(24) port map (EM2_in, clk, rst, '1', EM2_out);
 DMin <= "0000000000000" & EM1_out(47 downto 45) & EM1_out(44 downto 29);
 DMaddress <= EM1_out(22 downto 13) when EM1_out(48) = '0'
