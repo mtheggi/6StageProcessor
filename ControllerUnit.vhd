@@ -58,7 +58,9 @@ temp2<="0100000011";
 -- Determine if call from Opcode & func
 selPC <= '1' when (int='1' or RTIDetectTemp = "111100")
 	else '0';
-mux1: mux2 GENERIC map(10) port map(temp,temp2,ControllerSignal,selPC);
+ControllerSignal <= temp2 when int='1'
+                    else "0100010011" when RTIDetectTemp = "111100"
+                    else temp;
 AluSelector<=Func;
 selectPC <= selPC;
 integerOpcode <= to_integer(unsigned(opCode));
