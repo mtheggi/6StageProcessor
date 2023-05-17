@@ -13,10 +13,11 @@ end integration;
 
 architecture archinteg of integration is
 component fetch is
-port( en, rst, clk, branch, int, RET_RTI:in std_logic;
+port( en, rst, clk, branch, int, RET_RTI, RETstall:in std_logic;
 	branch_update, RET_RTI_update: in std_logic_vector ( 15 downto 0);
 	updated_PC: out std_logic_vector ( 15 downto 0);
-      inst: out std_logic_vector(31 downto 0));
+  inst: out std_logic_vector(31 downto 0);
+  intOut: out std_logic);
 end component;
 component Decode is
   port (
@@ -159,6 +160,7 @@ signal LDUse, RETstall, FDEnable, FDReset: std_logic;
 signal selectPC: std_logic;
 signal ValidRs, ValidRt, NotBufferReset: std_logic;
 signal conditionA, conditionB: std_logic;
+signal interruptLatch:std_logic;
 -- 
 signal BufferResetFromHDU, EM1_RST, HDU_Enable: std_logic; 
 --
@@ -166,13 +168,13 @@ begin
 -- 
 HDU : HazardDetectionUnit port map(DE_out(69) ,DE_out(68) , EM1_out (53) ,EM1_out (52) , LDUse, BufferResetFromHDU  );
 -- 
-FD_in <= int & updated_PC & instruction;
+FD_in <= interruptLatch & updated_PC & instruction;
 DE_in <= ValidRs & ValidRt & selectPC & FD_Out(47 downto 32) & RET_RTI_Dec & FD_Out(48) & ControllerSignal & rs_data & rt_data & immediateVal & rs & rt & rd & AluSelector & identifierBit;
 EM1_in <= DE_out(72 downto 71) & ControllerSignalsofM1 & CCROut & DMdata & ALUResult & DE_out(6 downto 4) & SPout;
 OpcodePlusFunc<=instruction(31 downto 29)&AluSelector;
 EM2_in <= EM1_out(50) & EM1_out(55) & EM1_out(52 downto 51) & EM1_out(49) & EM1_out(28 downto 13) & EM1_out(12 downto 10);
 MW_in <= DMout & EM2_out;
-f: fetch port map (HDU_Enable, rst, clk, UpdateSelector, int, MW_out(22), ALUA, WBResult, updated_PC, instruction);
+f: fetch port map (HDU_Enable, rst, clk, UpdateSelector, int, MW_out(22), RETstall, ALUA, WBResult, updated_PC, instruction, interruptLatch);
 FD: Reg generic map(49) port map (FD_in, clk, FDReset, FDEnable, FD_out);
 d: Decode port map (FD_Out(48), clk, rst, MW_out(20), FD_out(31 downto 0), ControllerSignal, identifierBit, AluSelector, rs, rt, rd, MW_out(2 downto 0), WBResult, immediateVal, rs_data, rt_data,RET_RTI_Dec, selectPC, ValidRs, ValidRt);--Write en, address, data from WB
 HazardCount: CounterHazard port map(clk, RET_RTI_Dec, BufferResetFromHDU,RETstall);
@@ -209,6 +211,7 @@ conditionA <= '1' when unsigned(Operand1Sel) = 3
        else '0';
 conditionB <= '1' when unsigned(Operand2Sel) = 4
       else '0';
+
 opA: operandLatch port map (rst, clk, BufferResetFromHDU, conditionA, ALUAbefore,ALUA);
 opB: operandLatch port map (rst, clk, BufferResetFromHDU, conditionB, ALUBbefore,ALUB);
 
