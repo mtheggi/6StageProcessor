@@ -126,6 +126,14 @@ component CounterHazard is
 	);
 end component CounterHazard;
 
+component operandLatch is
+  Port ( rst, clk, stall, condition: in STD_LOGIC;
+   dataIn: in STD_LOGIC_VECTOR(15 downto 0);
+   dataOut: out STD_LOGIC_VECTOR(15 downto 0)
+);
+   
+end component;
+
 signal AluSelector, rs, rt, rd: std_logic_vector(2 downto 0);
 signal rs_data, rt_data: std_logic_vector(15 downto 0);
 signal FD_out, FD_in: std_logic_vector(48 downto 0);
@@ -150,6 +158,7 @@ signal Operand2Sel: std_logic_vector(2 downto 0);
 signal LDUse, RETstall, FDEnable, FDReset: std_logic;
 signal selectPC: std_logic;
 signal ValidRs, ValidRt, NotBufferReset: std_logic;
+signal conditionA, conditionB: std_logic;
 -- 
 signal BufferResetFromHDU, EM1_RST, HDU_Enable: std_logic; 
 --
@@ -195,6 +204,13 @@ with Operand2Sel select
                 EM2_out(18 downto 3) when "011",
                 WBResult when "100",  --MW_out(18 downto 3) 
                 DE_out(44 downto 29) when others;
+
+conditionA <= '1' when unsigned(Operand1Sel) = 3
+       else '0';
+conditionB <= '1' when unsigned(Operand2Sel) = 4
+      else '0';
+opA: operandLatch port map (rst, clk, BufferResetFromHDU, conditionA, ALUAbefore,ALUA);
+opB: operandLatch port map (rst, clk, BufferResetFromHDU, conditionB, ALUBbefore,ALUB);
 
 EM1_RST <= rst or BufferResetFromHDU;
 HDU_Enable <= rst or NotBufferReset;

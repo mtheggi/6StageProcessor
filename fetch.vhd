@@ -50,5 +50,6 @@ add2 <= (1 => '1', others => '0');
 m1: mux2 port map( add1, add2, sequential_increment, instruction(25));
 m2: mux2 port map( sequential_update, branch_update, update, branch);
 inst <= instruction;
-updated_PC <= sequential_update;
+updated_PC <= sequential_update when int = '0'
+else instruction_address;
 end archfetch;

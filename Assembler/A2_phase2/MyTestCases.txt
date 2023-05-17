@@ -25,6 +25,7 @@ jmp R1
 .org 300
 OUT R1
 IN R1
+NOP
 LDD R2, R1
 STD R2, R1
 LDM R3, 100
