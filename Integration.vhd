@@ -144,7 +144,7 @@ signal BranchFlag, UpdateSelector, rst_or_flush: std_logic;
 signal ALUResult1, ALUResult, WBResult: std_logic_vector(15 downto 0);
 signal ControllerSignalsofM1: std_logic_vector(5 downto 0);
 signal SPout, DMaddress: std_logic_vector(9 downto 0);
-signal ALUA, ALUB, DMdata: std_logic_vector(15 downto 0);
+signal ALUAbefore, ALUBbefore, ALUA, ALUB, DMdata: std_logic_vector(15 downto 0);
 signal Operand1Sel: std_logic_vector(1 downto 0);
 signal Operand2Sel: std_logic_vector(2 downto 0);
 signal LDUse, RETstall, FDEnable, FDReset: std_logic;
@@ -184,13 +184,13 @@ MW: reg generic map(56) port map (MW_in, clk, rst, '1', MW_out);
 WB: WriteBackMux port map (MW_out(18 downto 3),MW_out(39 downto 24), MW_out(21), WBResult);
 
 with Operand1Sel select
-        ALUA <= EM1_out(28 downto 13) when "01",
+        ALUAbefore <= EM1_out(28 downto 13) when "01",
                 EM2_out(18 downto 3) when "10",
                 MW_out(18 downto 3) when "11",
                 DE_out(60 downto 45) when others;
 
 with Operand2Sel select
-        ALUB <= DE_out(28 downto 13) when "001",
+        ALUBbefore <= DE_out(28 downto 13) when "001",
                 EM1_out(28 downto 13) when "010",
                 EM2_out(18 downto 3) when "011",
                 WBResult when "100",  --MW_out(18 downto 3) 
