@@ -55,7 +55,4 @@ inst <= instruction;
 updated_PC_signal <= sequential_update when interruptLatch = '0'
 else instruction_address;
 updated_PC <= updated_PC_signal;
-interruptLatch <= '0' when rst = '1' or updated_PC_signal = intAddress
-else int when RETstall = '0';
-intOut <= interruptLatch;
 end archfetch;
