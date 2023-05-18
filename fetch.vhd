@@ -38,7 +38,7 @@ END component;
 component PC is
 generic (n: integer := 16);
     port (
-        RST, Enable, clk, int: IN std_logic;
+        RST, Enable, IntEnable, clk, int: IN std_logic;
 	update, rstAddress, intAddress: in std_logic_vector(n-1 downto 0);
         inst_address: OUT std_logic_vector(n-1 downto 0);
 	RET_RTI: IN std_logic;
@@ -47,10 +47,10 @@ generic (n: integer := 16);
 end component;
 signal instruction: std_logic_vector(31 downto 0);
 signal instruction_address, add1, add2, sequential_increment, sequential_update, update, rstAddress, intAddress, updated_PC_signal: std_logic_vector(15 downto 0);
-signal cout: std_logic;
+signal cout, NotStall: std_logic;
 signal latchedInterrupt, conditionInt: std_logic;
 begin
-p1: PC port map(rst, en, clk, latchedInterrupt, update, rstAddress, intAddress, instruction_address, RET_RTI, RET_RTI_update);
+p1: PC port map(rst, en, NotStall, clk, latchedInterrupt, update, rstAddress, intAddress, instruction_address, RET_RTI, RET_RTI_update);
 ic: instruction_cache port map (instruction_address, instruction, rstAddress, intAddress);
 ad: my_nadder port map (instruction_address, sequential_increment, '0', sequential_update, cout);
 add1 <= (0 => '1', others => '0');
@@ -60,9 +60,10 @@ m2: mux2 port map( sequential_update, branch_update, update, branch);
 inst <= instruction;
 updated_PC_signal <= sequential_update when latchedInterrupt = '0'
 else instruction_address;
-IL: interruptLatch port map (rst, clk, stall, int, conditionInt, latchedInterrupt);
+IL: interruptLatch port map (rst, clk, stall, int, '0', latchedInterrupt);
 intOut <= latchedInterrupt;
 conditionInt <= '1' when instruction_address = intAddress
 				else '0';
 updated_PC <= updated_PC_signal;
+NotStall <= not stall;
 end archfetch;

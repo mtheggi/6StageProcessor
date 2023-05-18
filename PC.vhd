@@ -5,7 +5,7 @@ USE IEEE.numeric_std.all;
 entity PC is
 generic (n: integer := 16);
     port (
-        RST, Enable, clk, int: IN std_logic;
+        RST, Enable, IntEnable, clk, int: IN std_logic;
 	update, rstAddress, intAddress: in std_logic_vector(n-1 downto 0);
         inst_address: OUT std_logic_vector(n-1 downto 0);
 	RET_RTI: IN std_logic;
@@ -20,14 +20,16 @@ begin
 
     process(clk)
     begin
-        if rising_edge(clk) and rst = '1' then
-            current_address <= rstAddress;
-	elsif rising_edge(clk) and int = '1' then
-	    current_address <= intAddress;
-	elsif rising_edge(clk) and RET_RTI = '1' then
-	    current_address <= RET_RTI_update;
-        elsif rising_edge(clk) and Enable='1' then
-            current_address <= update;
+        if rising_edge(clk) then
+            if rst = '1' then
+                current_address <= rstAddress;
+	        elsif int = '1' and IntEnable='1' then
+	            current_address <= intAddress;
+	        elsif RET_RTI = '1' then
+	            current_address <= RET_RTI_update;
+            elsif Enable='1' then
+                current_address <= update;
+            end if;
         end if;
     end process;
 
