@@ -198,7 +198,7 @@ WB: WriteBackMux port map (MW_out(18 downto 3),MW_out(39 downto 24), MW_out(21),
 with Operand1Sel select
         ALUAbefore <= EM1_out(28 downto 13) when "01",
                 EM2_out(18 downto 3) when "10",
-                MW_out(18 downto 3) when "11",
+                WBResult when "11", --MW_out(18 downto 3) 
                 DE_out(60 downto 45) when others;
 
 with Operand2Sel select
