@@ -1,6 +1,10 @@
-.ORG 0
+.org 0
 20
-.ORG 20
+
+.org 1
+100
+
+.org 20
 in R3
 LDM R0,0 
 LDM R3,44 
@@ -15,10 +19,12 @@ JC R3
 STD R6,R6 
 MOV R4,R3
 INC R7,R7
-JC R5 
+JC R5
+
+.org 48
 INC R6,R3 
 JMP R6 
+
+.org 45
 SETC 
-JC R2 
 INC R1,R3 
-MOV R1,R7
