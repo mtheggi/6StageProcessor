@@ -3,6 +3,9 @@
 #the reset signal is raised before this code is executed and the flags and the registers are set to zeros.
 .ORG 0
 LDM R1,15 #R1=00000015
+.org 1
+2
+.org 2
 IN R2
 ADD R1,R4,R2
 STD R4,R1
