@@ -13,7 +13,7 @@ end integration;
 
 architecture archinteg of integration is
 component fetch is
-port( en, rst, clk, branch, int, RET_RTI, RETstall:in std_logic;
+port( en, rst, clk, branch, int, RET_RTI, stall:in std_logic;
 	branch_update, RET_RTI_update: in std_logic_vector ( 15 downto 0);
 	updated_PC: out std_logic_vector ( 15 downto 0);
   inst: out std_logic_vector(31 downto 0);
@@ -160,7 +160,7 @@ signal LDUse, RETstall, FDEnable, FDReset: std_logic;
 signal selectPC: std_logic;
 signal ValidRs, ValidRt, NotBufferReset: std_logic;
 signal conditionA, conditionB: std_logic;
-signal interruptLatch:std_logic;
+signal interruptLatch, IntStall:std_logic;
 -- 
 signal BufferResetFromHDU, EM1_RST, HDU_Enable: std_logic; 
 --
@@ -174,7 +174,8 @@ EM1_in <= DE_out(72 downto 71) & ControllerSignalsofM1 & CCROut & DMdata & ALURe
 OpcodePlusFunc<=instruction(31 downto 29)&AluSelector;
 EM2_in <= EM1_out(50) & EM1_out(55) & EM1_out(52 downto 51) & EM1_out(49) & EM1_out(28 downto 13) & EM1_out(12 downto 10);
 MW_in <= DMout & EM2_out;
-f: fetch port map (HDU_Enable, rst, clk, UpdateSelector, int, MW_out(22), RETstall, ALUA, WBResult, updated_PC, instruction, interruptLatch);
+f: fetch port map (HDU_Enable, rst, clk, UpdateSelector, int, MW_out(22), IntStall, ALUA, WBResult, updated_PC, instruction, interruptLatch);
+IntStall <= not FDEnable or FDReset;
 FD: Reg generic map(49) port map (FD_in, clk, FDReset, FDEnable, FD_out);
 d: Decode port map (FD_Out(48), clk, rst, MW_out(20), FD_out(31 downto 0), ControllerSignal, identifierBit, AluSelector, rs, rt, rd, MW_out(2 downto 0), WBResult, immediateVal, rs_data, rt_data,RET_RTI_Dec, selectPC, ValidRs, ValidRt);--Write en, address, data from WB
 HazardCount: CounterHazard port map(clk, RET_RTI_Dec, BufferResetFromHDU,RETstall);

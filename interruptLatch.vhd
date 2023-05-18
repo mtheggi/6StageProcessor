@@ -4,7 +4,8 @@ use IEEE.numeric_std.all;
 
 entity interruptLatch is
     port (
-        rst, clk, RET_stall, int, condition: std_logic
+        rst, clk, RET_stall, int, condition: in std_logic;
+				LatchedIntOut: out std_logic
     );
 end entity interruptLatch;
 
@@ -26,5 +27,5 @@ begin
     
     LatchedInt <= '0' when condition = '1'
                   else int when latchEnable='1';
-    
+    LatchedIntOut <= LatchedInt;
 end architecture intLatch;
