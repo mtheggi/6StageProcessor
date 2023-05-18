@@ -1,7 +1,7 @@
 library ieee;
 use ieee.std_logic_1164.all;
 entity fetch is
-port( en, rst, clk, branch, int, RET_RTI, stall:in std_logic;
+port( en, rst, clk, branch, int, RET_RTI, stall, BranchStall:in std_logic;
 	branch_update, RET_RTI_update: in std_logic_vector ( 15 downto 0);
 	updated_PC: out std_logic_vector ( 15 downto 0);
   inst: out std_logic_vector(31 downto 0);
@@ -47,7 +47,7 @@ generic (n: integer := 16);
 end component;
 signal instruction: std_logic_vector(31 downto 0);
 signal instruction_address, add1, add2, sequential_increment, sequential_update, update, rstAddress, intAddress, updated_PC_signal: std_logic_vector(15 downto 0);
-signal cout, NotStall: std_logic;
+signal cout, NotStall, stallInput: std_logic;
 signal latchedInterrupt, conditionInt: std_logic;
 begin
 p1: PC port map(rst, en, NotStall, clk, latchedInterrupt, update, rstAddress, intAddress, instruction_address, RET_RTI, RET_RTI_update);
@@ -60,10 +60,13 @@ m2: mux2 port map( sequential_update, branch_update, update, branch);
 inst <= instruction;
 updated_PC_signal <= sequential_update when latchedInterrupt = '0'
 else instruction_address;
-IL: interruptLatch port map (rst, clk, stall, int, '0', latchedInterrupt);
+IL: interruptLatch port map (rst, clk, stallInput, int, '0', latchedInterrupt);
 intOut <= latchedInterrupt;
 conditionInt <= '1' when instruction_address = intAddress
 				else '0';
 updated_PC <= updated_PC_signal;
-NotStall <= not stall;
+stallInput <= '1' when stall ='1' or BranchStall = '1'
+				else '0';
+NotStall <= '1' when not (stallInput = '1')
+				else '0';
 end archfetch;
