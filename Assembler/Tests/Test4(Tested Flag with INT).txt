@@ -1,8 +1,10 @@
-.ORG 0
+.org 0
 20
 
+.org 1
+42
 
-.ORG 20
+.org 20
 IN R6
 ADD R5,R5,R6
 IN R5
@@ -13,3 +15,8 @@ SUB R1,R3,R1
 JZ R3 
 ADD R0,R2 ,R1
 ADD R4,R2 ,R1
+
+.org 42
+ADD R3, R1, R1
+STD R3, R1
+RTI
