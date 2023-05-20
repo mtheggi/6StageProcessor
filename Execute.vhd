@@ -36,8 +36,8 @@ architecture Exec of Execute is
     end component;
 
     signal ALUFlags,CCROut1, OutputBeforeMux: std_logic_vector(2 downto 0);
-    signal STCorCLC: std_logic;
-    signal MuxSelector: std_logic_vector(1 downto 0);
+    signal STCorCLC, JCorJZ: std_logic;
+    signal MuxSelector: std_logic_vector(2 downto 0);
     signal currentRTIBit: std_logic;
     signal CCREnable: std_logic;
 begin
@@ -50,7 +50,7 @@ begin
     -- InEnb<=ControllerSignal(1);
     -- AddressSelector<=ControllerSignal(0);
 
-    ALUComp: ALU port map(ALUA, ALUB, ALUFlags, ALUFunction, ControlSignals(9), ALUResult, OutputBeforeMux);
+    ALUComp: ALU port map(ALUA, ALUB, CCROut1, ALUFunction, ControlSignals(9), ALUResult, OutputBeforeMux);
     CCRComp: CCR port map(ALUFlags, clk, rst, CCREnable, CCROut1);
 
     CCROut <= CCROut1;
@@ -62,14 +62,17 @@ begin
     OutputPort <= ALUA when ControlSignals(2) = '1'
                  else (others => '0') when rst='1';
 
-    STCorCLC <= (not (ControlSignals(8) or ControlSignals(7) or ControlSignals(6) or ControlSignals(4)) or ControlSignals(2)) and (ALUFunction(1) or ALUFunction(0));
-    MuxSelector <= RTIBit & STCorCLC when RTIBit = '1'
-                    else '0' & STCorCLC;
+    STCorCLC <= (not (ControlSignals(8) or ControlSignals(7) or ControlSignals(6) or ControlSignals(4) or ControlSignals(2))) and (ALUFunction(1) or ALUFunction(0));
+    MuxSelector <= RTIBit & STCorCLC & JCorJZ when RTIBit = '1'
+                    else '0' & STCorCLC & JCorJZ;
     
-    with MuxSelector select
-        ALUFlags <= OutputBeforeMux when "00",
-                    (ALUFunction(0) & ALUFlags(1 downto 0)) when "01",
-                    CCRFromRTI when "10",
-                    (others => '0') when others;
+    JCorJZ <= (ControlSignals(4) and not ControlSignals(0));
+
+    ALUFlags <= OutputBeforeMux when MuxSelector = "000"
+                else (ALUFunction(0) & ALUFlags(1 downto 0)) when MuxSelector = "010"
+                else ('0' & ALUFlags(1 downto 0)) when MuxSelector = "001" and ALUFunction(0) = '0'
+                else (ALUFlags(2 downto 1) & '0') when MuxSelector = "001" and ALUFunction(0) = '1'
+                else CCRFromRTI when MuxSelector = "100"
+                else (others => '0');
     
 end architecture Exec;
