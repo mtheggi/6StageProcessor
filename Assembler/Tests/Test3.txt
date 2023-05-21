@@ -2,7 +2,7 @@
 # all numbers are in hexadecimal
 #the reset signal is raised before this code is executed and the flags and the registers are set to zeros.
 .ORG 0
-LDM R1,15 #R1=00000015
+20
 .org 1
 2
 .org 2
@@ -15,7 +15,7 @@ LDM R2,19 #R2=00000019 add 19 in R2
 LDM R3,F #R3=0000000F
 LDM R1,5 #R1=5
 PUSH R1 #SP=000003FE,M[000003FF]=5
-PUSH R2 #SP=000003FD,M[000003FE]=19
+PUSH R2 #SP=000003FD,M[000003FE]=19 #interrupt raised
 POP R1 #SP=000003FE,R1=00000019
 POP R2 #SP=000003FF,R2=00000005
 STD R3,R1  #M[0000000F]=00000019
