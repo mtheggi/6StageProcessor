@@ -24,7 +24,7 @@ JC R5
 JMP R3 
 ADD R2,R2 ,R2
 
-.org 43
+.org 2B
 LDM R0,0 
 LDM R3,3A 
 LDM R5,40 

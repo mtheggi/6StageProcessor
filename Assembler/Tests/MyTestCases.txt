@@ -1,0 +1,45 @@
+# This is our testcase
+.org 0
+5
+.org 1
+42
+.org 5
+NOP
+SETC
+CLRC
+SUB R3, R4, R5
+NOT R1,R7
+INC R2, R3
+DEC R3,  R4
+MOV R5, R4
+ADD R7, R6,R0   #ok
+
+OR R1, R1, R1 #Interrupt Raised
+  
+     inc R1, R2
+IADD R1, R2, AFDE
+SUB R2, R1, R7
+AND R7, R6, R1
+LDM R1, 300
+jmp R1
+.org 300
+OUT R1
+IN R1
+NOP
+LDD R2, R1
+STD R2, R1
+LDM R3, 100
+SUB R2, R2, R2
+JZ R3
+.org 100
+PUSH R1
+POP R3
+LDM R2, 2
+CaLL R2
+.org 2
+STD R1, R1
+STD R1, R1
+RET
+
+.org 42
+RTI
