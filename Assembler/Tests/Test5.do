@@ -62,7 +62,7 @@ force -freeze sim:/integration/rst 1 0
 force -freeze sim:/integration/inport 44 0
 force -freeze sim:/integration/int 0 0
 force -freeze sim:/integration/int 0 0
-mem load -i {G:\CCE\spring 2023\6StageProcessor-main\Assembler\A2_phase2/Test5.mem} /integration/f/ic/ram
+mem load -i {C:\Windows\System32\cmd.exe/Test5.mem} /integration/f/ic/ram
 run
 force -freeze sim:/integration/rst 0 0
 run
