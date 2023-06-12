@@ -22,7 +22,7 @@ A 6-Stage Digital Processor that works on Harvard Architecture utilizing Full Fo
 4. Copy any do file and edit the memory importing command and any intializations.
 5. Run your do file and Watch your code in action.
 
-# [References](#References)
+# References
 You can find more about the project specifics in the project document and reference textbook.
 - [Architecture_Project_S23_Credit_students.pdf](https://github.com/mtheggi/6StageProcessor/files/11716063/Architecture_Project_S23_Credit_students.pdf)
 - Computer Organization and Design - Fifth Edition - David A. Patterson & John L. Hennessy
